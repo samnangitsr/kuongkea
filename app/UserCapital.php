@@ -95,6 +95,7 @@ class UserCapital extends Model
         return $datas;
     }
     static public function showlink_id($linkid,$tablename){
+        $datas=collect();
         if($tablename=='user_capitals'){
             $datas=UserCapital::where('id',$linkid)->orderBy('id')->get();
         }elseif($tablename=='exchanges'){

@@ -1484,6 +1484,10 @@ class MoneyTransferController extends Controller
         if ($validator->fails()) {
             return response()->json(['error'=>$validator->errors()->all()]);
         }
+        $validator1 = Validator::make($request->all(), []);
+        $validator2 = Validator::make($request->all(), []);
+        $validator3 = Validator::make($request->all(), []);
+        $validator33 = Validator::make($request->all(), []);
         if($request->hasexchange=='1'){
             $validator1 = Validator::make($request->all(), [
                 'txtbuy' => 'required', //input array validate
@@ -1562,6 +1566,8 @@ class MoneyTransferController extends Controller
         $date1 = str_replace('/', '-', $request->opdates);
         $opdate1= date('Y-m-d', strtotime($date1));
         $ref_group_id='';
+        $cashdraw_id=0;
+        $found_group=0;
         $selcomid=Session('log_into_company_id');
         if($request->hasmulticashdraw==1){
           foreach ($request->list_transferid as $key => $value) {
@@ -1915,6 +1921,8 @@ class MoneyTransferController extends Controller
             'txtcur1'=>'required',
             'fee'=>'required',
         ]);
+        $validator4 = Validator::make($request->all(), []);
+        $validator5 = Validator::make($request->all(), []);
         if($request->trancode=='-4'){
             $validator4 = Validator::make($request->all(), [
                 'selpartner2' => 'required', //input array validate
@@ -2314,6 +2322,7 @@ class MoneyTransferController extends Controller
       $cashdraw_id='';
       $frompid=0;
       $banknote='';
+      $partner_name='';
       $selcomid=Session('log_into_company_id');
       foreach ($request->list_partnername as $key => $value) {
         if($key==0){
@@ -2591,6 +2600,7 @@ class MoneyTransferController extends Controller
         if ($validator->fails()) {
             return response()->json(['error'=>$validator->errors()->all()]);
         }
+        $validator1 = Validator::make($request->all(), []);
         if($request->trancode==-4 || $request->trancode==4){
             $validator1 = Validator::make($request->all(), [
                 'selpartner2'=>'required',
@@ -3171,6 +3181,13 @@ class MoneyTransferController extends Controller
     {
         //return $request->all();
         $hasmultitransfer=$request->hasmultitransfer;
+        $groupid='';
+        $validator = Validator::make($request->all(), []);
+        $validator1 = Validator::make($request->all(), []);
+        $validator2 = Validator::make($request->all(), []);
+        $validator3 = Validator::make($request->all(), []);
+        $validator4 = Validator::make($request->all(), []);
+        $validator5 = Validator::make($request->all(), []);
         if($hasmultitransfer==0){
           $validator = Validator::make($request->all(), [
               'tranname'=>'required',
@@ -4031,7 +4048,7 @@ class MoneyTransferController extends Controller
             $e2->dd=$trandate;
             $e2->tt=$trantime;
             $e2->currency_id=$r->curid2;
-            $e2->product=-1 * str_replace(',','',$r->item2);
+            $e2->product=-1 * floatval(str_replace(',','',$r->item2));
             $e2->pcur=$r->pcur2;
             $e2->amount=$luy;
             $e2->maincur='USD';
@@ -4108,7 +4125,7 @@ class MoneyTransferController extends Controller
             $e2->dd=$trandate;
             $e2->tt=$trantime;
             $e2->currency_id=$r->curid1;
-            $e2->product=-1 * str_replace(',','',$r->item1);
+            $e2->product=-1 * floatval(str_replace(',','',$r->item1));
             $e2->pcur=$r->pcur1;
             $e2->amount=$luy;
             $e2->maincur='USD';
@@ -4245,7 +4262,7 @@ class MoneyTransferController extends Controller
                 $e2->dd=$trandate;
                 $e2->tt=$trantime;
                 $e2->currency_id=$saleinfoes[0];
-                $e2->product=-1 * str_replace(',','',$request->txtsales[$key]);
+                $e2->product=-1 * floatval(str_replace(',','',$request->txtsales[$key]));
                 $e2->pcur=$request->txtcursales[$key];
                 $e2->amount=$luy;
                 $e2->maincur='USD';
@@ -4288,7 +4305,7 @@ class MoneyTransferController extends Controller
             'trantime'=>$trantime,
             'user_id'=>Auth::id(),
             'user_id_affect'=>Auth::id(),
-            'amount'=>-1 * str_replace(',','',$request->bankamt[$key]),
+            'amount'=>-1 * floatval(str_replace(',','',$request->bankamt[$key])),
             'currency_id'=>$request->bankcur[$key],
             'tranname'=>'ដកលុយ',
             'trancode'=>-1,
@@ -4315,6 +4332,7 @@ class MoneyTransferController extends Controller
    {
         //return $request->all();
         $id=explode('-',$request->refnum);
+        $transfers=collect();
         if($id[0]=='transfer'){
           $transfers=PartnerTransfer::where('id',$id[1])->get()->load('customer','partner','currency','cuschargecur','user');
         }elseif($id[0]=='cashdraw'){

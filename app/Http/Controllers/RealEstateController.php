@@ -797,8 +797,8 @@ class RealEstateController extends Controller
             $paycom_id=$paycom->id;
             foreach ($items as $item) {
                 $id = $item['id'];
-                $amount = str_replace(',', '', $item['amount']);
-                $total_commission+=floatval($amount);
+                $amount = floatval(str_replace(',', '', $item['amount']));
+                $total_commission+=$amount;
 
 
                 if($selbank<>'cash'){
@@ -1163,6 +1163,8 @@ class RealEstateController extends Controller
 
         foreach($transfers as $t){
             $buyinv=PartnerTransfer::where('id',$t->payonid)->where('status',1)->first();
+            $nextpayment_main=null;
+            $nextpayment_new=null;
 
                 if($buyinv){
                     $t->main_amount=$buyinv->amount;
@@ -1417,9 +1419,9 @@ class RealEstateController extends Controller
             ->where(function($q) use($m,$y){
                 $q->where(function($q1) use($m,$y){
                     $q1->whereMonth('payformonth','<=',$m)->whereYear('payformonth','<=',$y)->whereNotNull('nextpayment');
-                })->orWhere(function($q2) use($m,$y){
+                })->orWhere(function($q2){
                     $q2->whereNull('payformonth')->whereNotNull('nextpayment');
-                })->orWhere(function($q3) use($m,$y){//សំរាប់អតិថិជនទិញបង់់ផ្តាច់
+                })->orWhere(function($q3){//សំរាប់អតិថិជនទិញបង់់ផ្តាច់
                     $q3->where('paymenttype',1)->where('trancode',-8);
                 });
             })
@@ -1443,9 +1445,9 @@ class RealEstateController extends Controller
             ->where(function($q) use($m,$y){
                 $q->where(function($q1) use($m,$y){
                     $q1->whereMonth('partner_transfers.payformonth','<=',$m)->whereYear('partner_transfers.payformonth','<=',$y)->whereNotNull('partner_transfers.nextpayment');
-                })->orWhere(function($q2) use($m,$y){
+                })->orWhere(function($q2){
                     $q2->whereNull('partner_transfers.payformonth')->whereNotNull('partner_transfers.nextpayment');
-                })->orWhere(function($q3) use($m,$y){//សំរាប់អតិថិជនទិញបង់់ផ្តាច់
+                })->orWhere(function($q3){//សំរាប់អតិថិជនទិញបង់់ផ្តាច់
                     $q3->where('partner_transfers.paymenttype',1)->where('partner_transfers.trancode',-8);
                 });
             })->orderBy('partner_transfers.id','DESC')->get()->unique(['payonid']);
@@ -1455,9 +1457,9 @@ class RealEstateController extends Controller
             ->where(function($q) use($m,$y){
                 $q->where(function($q1) use($m,$y){
                     $q1->whereMonth('payformonth','<=',$m)->whereYear('payformonth','<=',$y)->whereNotNull('nextpayment');
-                })->orWhere(function($q2) use($m,$y){
+                })->orWhere(function($q2){
                     $q2->whereNull('payformonth')->whereNotNull('nextpayment');
-                })->orWhere(function($q3) use($m,$y){//សំរាប់អតិថិជនទិញបង់់ផ្តាច់
+                })->orWhere(function($q3){//សំរាប់អតិថិជនទិញបង់់ផ្តាច់
                    $q3->where('paymenttype',1)->where('trancode',-8);
                 });
             })
@@ -1543,6 +1545,12 @@ class RealEstateController extends Controller
 
             //return $extrapay;
              $buyinv=PartnerTransfer::where('id',$t->payonid)->where('status',1)->first();
+            $nextpayment_main=null;
+            $cuscharge_main=0;
+            $discount_main=0;
+            $mainid=null;
+            $trancode=null;
+            $nextpayment_new=null;
             if($buyinv){
                 $t->main_amount=$buyinv->amount;
                 $t->main_id=$buyinv->id;
@@ -1583,7 +1591,7 @@ class RealEstateController extends Controller
                 ->where(function($q) use($m,$y){
                     $q->where(function($q1) use($m,$y){
                         $q1->whereMonth('payformonth','<=',$m)->whereYear('payformonth','<=',$y);
-                    })->orWhere(function($q2) use($m,$y){
+                    })->orWhere(function($q2){
                         $q2->whereNull('payformonth');
                     });
                 })->orderBy('id','DESC')->first();//->unique(['payonid']);
@@ -1676,6 +1684,7 @@ class RealEstateController extends Controller
         $transfers=$transfers->get();
 
         foreach($transfers as $t){
+            $nextpayment=null;
             if($t->paymenttype==2){
                 $paythismonth = PartnerTransfer::where([
                     ['status', '=', 1],
@@ -2030,6 +2039,7 @@ class RealEstateController extends Controller
        $id=$request->id;
         $logo=Company::orderBy('id')->first();
         $transfer=PartnerTransfer::where('id',$request->id)->first();
+        $transfergroup=collect();
         if($transfer){
             $transfer0=PartnerTransfer::where('id',$transfer->payonid)->first();
             $soldprice=$transfer0->amount ?? '0';
@@ -2943,6 +2953,7 @@ class RealEstateController extends Controller
         $trancode=$request->type;
         $rpttitle='';
         $paymenttype=$request->selbankname;
+        $reports=PartnerTransfer::query()->whereRaw('1 = 0');
         if($request->type=='-8'){
              if($request->selbank=='all'){
                  $reports = PartnerTransfer::join('customers as c', 'partner_transfers.parrent_id', '=', 'c.id')
@@ -3120,6 +3131,12 @@ class RealEstateController extends Controller
             return response()->json(['error'=>$validator->errors()->all()]);
         }
         $saler_id=0;
+        $trancode=0;
+        $mekun=0;
+        $tranname='';
+        $tranname1='';
+        $havecommission=0;
+        $te_response=null;
         $checktrid=PartnerTransfer::find($request->id1);
         if($checktrid){
             if($checktrid->trancode==-8){
@@ -3565,11 +3582,12 @@ class RealEstateController extends Controller
     {
         $buyinfo=PartnerTransfer::find($request->id);
         $totaldeposit=PartnerTransfer::where('status',1)->where('parrent_id',$buyinfo->parrent_id)->whereNull('payformonth')->where('payonid',$buyinfo->id)->where('id','<>',$buyinfo->id)->sum('amount');
-        $buyinfo['totaldeposit']=$totaldeposit??0;
+        $buyinfo['totaldeposit']=$totaldeposit;
         $saledetail=SaleDetail::where('sale_id',$buyinfo->id)->where('status',1)->first();
         $propertylocation=$saledetail->property->group->name;
         $buyinfo['propertylocation']=$propertylocation;
         $contract=Contract::where('property_id',$saledetail->property_id)->first();
+        $companyinfo=null;
         if($contract)
         {
             $companyid=$contract->company_id;
@@ -3676,7 +3694,7 @@ class RealEstateController extends Controller
                 }else{
                     $action='';
                 }
-                $myc=$myc->push(['id'=>$found->id,'payonid'=>$request->id,'dd'=>$found->payformonth,'tt'=>$found->tt,'usersave'=>$found->user->name,'trancode'=>$found->trancode,'tranname'=>$found->tranname,'amount'=>$found->amount,'curid'=>$t->currency_id,'currency'=>$found->currency->sk,'curname'=>$found->currency->shortcut,'sendername'=>$found->sendername,'groupid'=>$found->ref_group_id,'trandate'=>$found->dd,'action'=>$action]);
+                $myc=$myc->push(['id'=>$found->id,'payonid'=>$request->id,'dd'=>$found->payformonth,'tt'=>$found->tt,'usersave'=>$found->user->name,'trancode'=>$found->trancode,'tranname'=>$found->tranname,'amount'=>$found->amount,'curid'=>$found->currency_id,'currency'=>$found->currency->sk,'curname'=>$found->currency->shortcut,'sendername'=>$found->sendername,'groupid'=>$found->ref_group_id,'trandate'=>$found->dd,'action'=>$action]);
             }else{
                 $foundblank +=1;
                 if($foundblank==1){

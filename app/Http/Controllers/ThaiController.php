@@ -1145,7 +1145,7 @@ class ThaiController extends Controller
         }
 
         if($request->update=='true'){
-            $dat1=SmsProcess::join('sms','sms_processes.sms_id','=','sms.id')->where('sms_processes.status',1)->where('sms_processes.company_id',$selcomid)->where('sms_processes.missioncomplete',1)->whereBetween(DB::raw('DATE(sms_processes.updated_at)'), array($d1, $d2))->select('sms_processes.*');
+            $data1=SmsProcess::join('sms','sms_processes.sms_id','=','sms.id')->where('sms_processes.status',1)->where('sms_processes.company_id',$selcomid)->where('sms_processes.missioncomplete',1)->whereBetween(DB::raw('DATE(sms_processes.updated_at)'), array($d1, $d2))->select('sms_processes.*');
         }else{
             $data1=SmsProcess::join('sms','sms_processes.sms_id','=','sms.id')->where('sms_processes.status',1)->where('sms_processes.company_id',$selcomid)->where('sms_processes.missioncomplete',1)->whereBetween(DB::raw('DATE(sms_processes.opdate)'), array($d1, $d2))->select('sms_processes.*');
         }
@@ -1808,6 +1808,8 @@ class ThaiController extends Controller
 
         foreach ($request->banktid0 as $key => $value) {
             $amt=floatval(str_replace(',','',$request->bankamt0[$key]));
+            $trancode=0;
+            $tranname='';
             if($request->trancode0==1){
               if($amt>0){
                 $trancode=-1;
@@ -1960,6 +1962,8 @@ class ThaiController extends Controller
 
         foreach ($request->banktid as $key => $value) {
             $amt=floatval(str_replace(',','',$request->bankamt[$key]));
+            $trancode=0;
+            $tranname='';
             if($request->trancode1==1){
               if($amt>0){
                 $trancode=-1;
@@ -2173,6 +2177,10 @@ class ThaiController extends Controller
         if ($validator->fails()) {
             return response()->json(['error'=>$validator->errors()->all()]);
         }
+        $validator1 = Validator::make($request->all(), []);
+        $validator2 = Validator::make($request->all(), []);
+        $validator3 = Validator::make($request->all(), []);
+        $validator33 = Validator::make($request->all(), []);
         if($request->hasexchange=='1'){
             $validator1 = Validator::make($request->all(), [
                 'txtbuy' => 'required', //input array validate
@@ -2256,6 +2264,9 @@ class ThaiController extends Controller
         $date1 = str_replace('/', '-', $request->opdates);
         $opdate1= date('Y-m-d', strtotime($date1));
         $ref_group_id='';
+        $cashdraw_id=0;
+        $found_group=0;
+        $userprint=Auth::user()->name;
         if($request->hasmulticashdraw==1){
           foreach ($request->list_transferid as $key => $value) {
             $cashdraw=new SmsProcess();
@@ -2820,7 +2831,7 @@ class ThaiController extends Controller
              $e2->dd=$trandate;
              $e2->tt=$trantime;
              $e2->currency_id=$pid2;
-             $e2->product=-1 * str_replace(',','',$sale);
+             $e2->product=-1 * floatval(str_replace(',','',$sale));
              $e2->pcur=$cursale;
              $e2->amount=$luy;
              $e2->maincur='USD';
@@ -2968,7 +2979,7 @@ class ThaiController extends Controller
              $e2->dd=$trandate;
              $e2->tt=$trantime;
              $e2->currency_id=$r->curid2;
-             $e2->product=-1 * str_replace(',','',$r->item2);
+             $e2->product=-1 * floatval(str_replace(',','',$r->item2));
              $e2->pcur=$r->pcur2;
              $e2->amount=$luy;
              $e2->maincur='USD';
@@ -3048,7 +3059,7 @@ class ThaiController extends Controller
              $e2->dd=$trandate;
              $e2->tt=$trantime;
              $e2->currency_id=$r->curid1;
-             $e2->product=-1 * str_replace(',','',$r->item1);
+             $e2->product=-1 * floatval(str_replace(',','',$r->item1));
              $e2->pcur=$r->pcur1;
              $e2->amount=$luy;
              $e2->maincur='USD';
@@ -3193,7 +3204,7 @@ class ThaiController extends Controller
              $e2->dd=$trandate;
              $e2->tt=$trantime;
              $e2->currency_id=$saleinfoes[0];
-             $e2->product=-1 * str_replace(',','',$request->txtsales[$key]);
+             $e2->product=-1 * floatval(str_replace(',','',$request->txtsales[$key]));
              $e2->pcur=$request->txtcursales[$key];
              $e2->amount=$luy;
              $e2->maincur='USD';

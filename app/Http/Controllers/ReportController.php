@@ -343,9 +343,9 @@ class ReportController extends Controller
     }
     public function converttimetoint($t){
         $a=explode(':',$t);
-        $h=$a[0]*3600;
-        $m=$a[1]*60;
-        $s=$a[2];
+        $h=intval($a[0])*3600;
+        $m=intval($a[1])*60;
+        $s=intval($a[2]);
         return $h+$m+$s;
     }
     function phpformatnumber($num){

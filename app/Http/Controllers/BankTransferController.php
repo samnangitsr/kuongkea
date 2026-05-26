@@ -205,7 +205,7 @@ class BankTransferController extends Controller
         $bt->trantime=$trtime;
         $bt->user_id=Auth::user()->id;
         $bt->customer_id=$request->sel_from;
-        $bt->amount=-1 * str_replace(',','',$request->amount1);
+        $bt->amount=-1 * floatval(str_replace(',','',$request->amount1));
         $bt->currency_id=$request->sel_cur1;
         $bt->tranname='Transfer';
         $bt->note='Transfer to ' . $request->receiver . ' Amount: ' . $amt2 . ' ' . $cur2 ;
