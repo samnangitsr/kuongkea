@@ -31,4 +31,23 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'telegram' => [
+        'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+        'chat_id' => env('TELEGRAM_CHAT_ID'),
+        'bot_token1' => env('TELEGRAM_BOT_TOKEN1'),
+        'chat_id1' => env('TELEGRAM_CHAT_ID1'),
+        'bot_token2' => env('TELEGRAM_BOT_TOKEN2'),
+        'chat_id2' => env('TELEGRAM_CHAT_ID2'),
+    ],
+
+    'kuongkea' => [
+        'bot_token' => env('KUONGKEA_BOT_TOKEN'),
+        'chat_id' => env('KUONGKEA_CHAT_ID'),
+    ],
+
+    'facebook' => [
+        'verify_token' => env('FB_VERIFY_TOKEN'),
+        'page_id' => env('FB_PAGE_ID'),
+    ],
+
 ];

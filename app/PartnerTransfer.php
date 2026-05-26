@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class PartnerTransfer extends Model
 {
-     function phpformatnumber($num){
+     static public function phpformatnumber($num){
         $dc=0;
         $p=strpos((float)$num,'.');
         if($p>0){
@@ -196,10 +196,10 @@ class PartnerTransfer extends Model
                 'id' => $item->id ,
                 'tt'=>$item->optime,
                 'dd'=>$item->opdate,
-                'amount' => phpformatnumber($item->amount) . $item->currency->sk,
+                'amount' => self::phpformatnumber($item->amount) . $item->currency->sk,
                 'fee'=>0,
                 'interest'=>0,
-                'cuscharge'=>phpformatnumber($item->customer_charge) . $item->cuschargecur->sk,
+                'cuscharge'=>self::phpformatnumber($item->customer_charge) . $item->cuschargecur->sk,
                 'saveby' => $item->user->name ?? '',
                 'partner_name' => $item->frompartner->name ?? '',
                 'tranname' => 'Cash Draw', // static label or $item->tt
@@ -220,10 +220,10 @@ class PartnerTransfer extends Model
                     'id' => $item->id ,
                     'dd'=>$item->dd,
                     'tt'=>$item->tt,
-                    'amount' => phpformatnumber($item->amount) . $item->currency->sk,
-                    'fee'=>phpformatnumber($item->fee) . $item->feecurrency->sk,
-                    'interest'=>phpformatnumber($item->interest) . $item->currency->sk,
-                    'cuscharge'=>phpformatnumber($item->customer_charge) . $item->cuschargecur->sk,
+                    'amount' => self::phpformatnumber($item->amount) . $item->currency->sk,
+                    'fee'=>self::phpformatnumber($item->fee) . $item->feecurrency->sk,
+                    'interest'=>self::phpformatnumber($item->interest) . $item->currency->sk,
+                    'cuscharge'=>self::phpformatnumber($item->customer_charge) . $item->cuschargecur->sk,
                     'saveby' => $item->user->name ?? '',
                     'partner_name' => $item->partner->name ?? '',
                     'tranname' => $item->tranname,
