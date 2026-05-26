@@ -5,6 +5,39 @@ namespace App;
 use App\Stock;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed $active
+ * @property mixed $buy
+ * @property mixed $company_id
+ * @property mixed $created_at
+ * @property mixed $curname
+ * @property mixed $decpoint
+ * @property mixed $imglocation
+ * @property mixed $imgpath
+ * @property mixed $iscustomerdisplay
+ * @property mixed $isexchangecur
+ * @property mixed $isfn
+ * @property mixed $isgold
+ * @property mixed $ismain
+ * @property mixed $ispandp
+ * @property mixed $lmr
+ * @property mixed $lomeang
+ * @property mixed $no
+ * @property mixed $optsign
+ * @property mixed $partner_cur
+ * @property mixed $rate_buy
+ * @property mixed $ratebuy
+ * @property mixed $ratesale
+ * @property mixed $ratio
+ * @property mixed $sale
+ * @property mixed $shortcut
+ * @property mixed $sk
+ * @property mixed $skey
+ * @property mixed $tuochek
+ * @property mixed $updated_at
+ * @property mixed $user_connect
+ * @property mixed $user_id
+ */
 class Currency extends Model
 {
     // protected $fillable = [

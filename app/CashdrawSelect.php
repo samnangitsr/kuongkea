@@ -4,6 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed $created_at
+ * @property mixed $sms_id
+ * @property mixed $sms_process_id
+ * @property mixed $transfer_id
+ * @property mixed $user
+ * @property mixed $user_id
+ */
 class CashdrawSelect extends Model
 {
     public function user()

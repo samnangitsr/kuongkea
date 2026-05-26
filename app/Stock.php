@@ -5,6 +5,14 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * @property mixed $amount
+ * @property mixed $platin_weight
+ * @property mixed $rate
+ * @property mixed $stock
+ * @property mixed $stockdate
+ * @property mixed $tamt
+ */
 class Stock extends Model
 {
      use HasFactory;

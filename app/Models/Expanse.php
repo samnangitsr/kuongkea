@@ -5,6 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed $amount
+ * @property mixed $amt
+ * @property mixed $created_at
+ * @property mixed $currency
+ * @property mixed $currency_id
+ * @property mixed $dd
+ * @property mixed $desr
+ * @property mixed $tamt
+ * @property mixed $tranname
+ * @property mixed $tt
+ * @property mixed $type
+ * @property mixed $user_id
+ * @property mixed $user_record
+ */
 class Expanse extends Model
 {
     use HasFactory;

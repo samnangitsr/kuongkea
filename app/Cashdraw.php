@@ -5,6 +5,38 @@ namespace App;
 use App\CashdrawSelect;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed $action
+ * @property mixed $amount
+ * @property mixed $amt
+ * @property mixed $company_id
+ * @property mixed $created_at
+ * @property mixed $currency
+ * @property mixed $currency_id
+ * @property mixed $cuscharge
+ * @property mixed $cuscharge_currency_id
+ * @property mixed $cuschargecur
+ * @property mixed $customer_charge
+ * @property mixed $from_partner_id
+ * @property mixed $frompartner
+ * @property mixed $have_exchange
+ * @property mixed $note
+ * @property mixed $opdate
+ * @property mixed $optime
+ * @property mixed $other
+ * @property mixed $pay_commission_id
+ * @property mixed $paymethod
+ * @property mixed $receive_name
+ * @property mixed $receive_tel
+ * @property mixed $ref_group_id
+ * @property mixed $ref_number
+ * @property mixed $tamt
+ * @property mixed $tcuscharge
+ * @property mixed $transfer_id
+ * @property mixed $updated_at
+ * @property mixed $user
+ * @property mixed $user_id
+ */
 class Cashdraw extends Model
 {
    static public function showcashdraw($trid){
