@@ -199,9 +199,9 @@ class CloseListController extends Controller
     }
     public function converttimetoint($t){
       $a=explode(':',$t);
-      $h=$a[0]*3600;
-      $m=$a[1]*60;
-      $s=$a[2];
+      $h=intval($a[0])*3600;
+      $m=intval($a[1])*60;
+      $s=intval($a[2]);
       return $h+$m+$s;
   }
   function phpformatnumber($num){
@@ -830,8 +830,9 @@ class CloseListController extends Controller
           $this->showpartnerlistdetail($request);
             $oldlist='true';
             $linkdetail='false';
-            $seelist=2;
+            $seelist=intval($request->seelist ?: 2);
             $ptls=PartnerTransferList::where('viewby',Auth::user()->name)->orderBy('trandate')->orderBy('id')->get();
+            $ptls_new=$ptls;
             if($seelist==2){
                 $ptls_new=$ptls;
             }else if($seelist==1){

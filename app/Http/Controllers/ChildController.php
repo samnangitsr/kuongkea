@@ -60,7 +60,7 @@ class ChildController extends Controller
     }
     public function searchaddress(Request $request)
     {
-        
+        $addresses=Address::where('status',1)->whereRaw('1 = 0');
         if($request->province!=''){
             $addresses=Address::where('status',1)->where('province_id',$request->province)->where('type','ស្រុក');
         }

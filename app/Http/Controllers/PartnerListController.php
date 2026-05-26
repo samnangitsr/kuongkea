@@ -536,9 +536,9 @@ class PartnerListController extends Controller
     }
     public function converttimetoint($t){
         $a=explode(':',$t);
-        $h=$a[0]*3600;
-        $m=$a[1]*60;
-        $s=$a[2];
+        $h=intval($a[0])*3600;
+        $m=intval($a[1])*60;
+        $s=intval($a[2]);
         return $h+$m+$s;
     }
     public function getcurrencyidbyshortcut($shortcut)
@@ -556,8 +556,14 @@ class PartnerListController extends Controller
         }else{
             $linkdetail='true';
         }
+        $predate=date('Y-m-d', strtotime($d1. ' - 1 days'));
+        $last_trandate_usd=$predate;
+        $last_trandate_thb=$predate;
+        $last_trandate_khr=$predate;
+        $last_trandate_vnd=$predate;
         $seelist=$request->seelist;
         $ptls=PartnerTransferList::where('viewby',Auth::user()->name)->orderBy('trandate')->orderBy('id')->get();
+        $ptls_new=$ptls;
         if($seelist==2){
             $ptls_new=$ptls;
         }else if($seelist==1){
@@ -1150,6 +1156,7 @@ class PartnerListController extends Controller
 
         $seelist=$request->seelist;
         $ptls=PartnerTransferList::where('viewby',Auth::user()->name)->orderBy('trandate')->orderBy('ttint')->get();
+        $ptls_new=$ptls;
         if($seelist==2){
             $ptls_new=$ptls;
         }else if($seelist==1){
@@ -1256,6 +1263,7 @@ class PartnerListController extends Controller
         $logo=Company::orderBy('id')->first();
         $partnername=$request->partnername;
         $weopen_oldlist=null;
+        $oldlist=null;
         $weopen=PartnerTotalList::where('viewby',Auth::user()->name)->where('total','<',0)->get();
         if($request->alldate=='true'){
           $weopen_records=PartnerTotalList::where('viewby',Auth::user()->name)->where('total','<',0)->orderBy('dd')->orderBy('ttint')->get();
@@ -1590,7 +1598,7 @@ class PartnerListController extends Controller
             $e2->dd=$trandate;
             $e2->tt=$trantime;
             $e2->currency_id=$r->curid2;
-            $e2->product=-1 * str_replace(',','',$r->item2);
+            $e2->product=-1 * floatval(str_replace(',','',$r->item2));
             $e2->pcur=$r->pcur2;
             $e2->amount=$luy;
             $e2->maincur='USD';
@@ -1672,7 +1680,7 @@ class PartnerListController extends Controller
             $e2->dd=$trandate;
             $e2->tt=$trantime;
             $e2->currency_id=$r->curid1;
-            $e2->product=-1 * str_replace(',','',$r->item1);
+            $e2->product=-1 * floatval(str_replace(',','',$r->item1));
             $e2->pcur=$r->pcur1;
             $e2->amount=$luy;
             $e2->maincur='USD';

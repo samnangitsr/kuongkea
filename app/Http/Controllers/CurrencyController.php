@@ -130,6 +130,9 @@ class CurrencyController extends Controller
                     $pattern1 = "/(THB|Baht)/i";
                     $pattern2 = "/(VND|Dong)/i";
                     $shortcut=$request->shortcut[$key];
+                    $shortcut1='';
+                    $c1='';
+                    $c2='';
                     if(preg_match($pattern1,$shortcut)===1){
                         $shortcut1='THB';
                     }elseif(preg_match($pattern2,$shortcut)===1){
@@ -630,6 +633,7 @@ protected function sendToFacebookPage($imagePath)
         if($maxdate<$today){
             $maxdate=$today;
         }
+        $updated_at=$maxdate;
         if(config('helper.transfer_option') == 'thorn'){
             return view('currencies.ratedisplayforthorn3',compact('cur1','cur2','cur3','bank_khr','bank_thb','bank_vnd','thai_usd','thai_khr','thai_usd_khr','company','maxdate','updated_at'));
         }else if(config('helper.transfer_option') == 'norn'){

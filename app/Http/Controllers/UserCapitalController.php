@@ -199,9 +199,9 @@ class UserCapitalController extends Controller
     public function convertimetoint($t)
     {
         $tt=explode(':',$t);
-        $h=$tt[0] * 3600;
-        $m=$tt[1] * 60;
-        $s=$tt[2]+$m+$h;
+        $h=intval($tt[0]) * 3600;
+        $m=intval($tt[1]) * 60;
+        $s=intval($tt[2])+$m+$h;
         return $s;
 
     }
@@ -227,6 +227,7 @@ class UserCapitalController extends Controller
         $curshortcut=$request->shortcut;
         $curname=$request->curname;
         $username=$request->username;
+        $userreportdetails=collect();
 
         if($request->seeby==''){
             $userreportdetails=UserReportDetail::where('viewby',Auth::id())->where('hide_view',0)->orderBy('timeint')->orderBy('id')->get();
@@ -324,6 +325,8 @@ class UserCapitalController extends Controller
         $cur=$request->cur;
         $userid=$request->userid;
         $curid=$request->curid;
+        $showlink=collect();
+        $sumamount=0;
         if (str_contains($request->tablename, 'transfer')) {
              $showlink = PartnerTransfer::whereBetween(DB::raw('DATE(dd)'), [$d1, $d2])
                 ->where('user_id', $userid)->where('status', 1)->whereNull('thai_amt')->where('location_id','<>',8)
@@ -852,7 +855,7 @@ class UserCapitalController extends Controller
                 ->where(function($qx) use($curid){
                     $qx->where('currency_id',$curid)->orWhere('cuscharge_currency_id',$curid);
                 })
-                ->where(function($q) use($userid){
+                ->where(function($q){
                     $q->where('trancode',1)->orWhere(function($q1){//បើកវេរវីង
                         $q1->where('trancode',-1)->where('iscashdraw',1)->whereNull('cashdraw_id')->where('location_id',3);
                     });
@@ -990,7 +993,7 @@ class UserCapitalController extends Controller
             ->where(function($qx) use($curid){
                 $qx->where('currency_id',$curid)->orWhere('cuscharge_currency_id',$curid);
             })
-            ->where(function($q) use($userid){
+            ->where(function($q){
                 $q->where('trancode',1)->orWhere(function($q1){//បើកវេរវីង
                     $q1->where('trancode',-1)->where('iscashdraw',1)->whereNull('cashdraw_id')->where('location_id',3);
                 });
@@ -1586,9 +1589,9 @@ class UserCapitalController extends Controller
             $sum=Expanse::whereBetween(DB::raw('DATE(dd)'), array($fromdate, $predate))->where('user_id',$userid)->where('currency_id',$curid)->where('status',1)->whereNull('transfer_id')->sum('amount');
             if($ismain==1){
                 $buysale=0;
-                $amount=$sum??0;
+                $amount=$sum;
             }else{
-                $buysale=$sum??0;
+                $buysale=$sum;
                 $amount=0;
             }
                 DB::table('user_report_details')->insert([
@@ -1780,7 +1783,7 @@ class UserCapitalController extends Controller
     {
         if($startdate_eq_enddate==false){
             $sum=SmsProcess::whereBetween(DB::raw('DATE(opdate)'), array($fromdate, $predate))->where('user_id',$userid)->where('currency_id',$curid)->where('status',1)->where('paymethod','Cash')->sum('amount');
-            $buysale=-1 * floatval($sum??0);
+            $buysale=-1 * floatval($sum);
             $amount=0;
             $desr='សរុបបើកវេរលុយថៃ';
             DB::table('user_report_details')->insert([
@@ -1968,12 +1971,12 @@ class UserCapitalController extends Controller
         if($startdate_eq_enddate==false){
             if($ismain==1){
                 $sum=Exchange::whereBetween(DB::raw('DATE(dd)'), array($fromdate, $predate))->where('user_id',$op,$userid)->where('status',1)->where('isexchangelist',0)->sum('amount');
-                $luy=$sum??0;
+                $luy=$sum;
                 $product=0;
             }else{
                 $sum=Exchange::whereBetween(DB::raw('DATE(dd)'), array($fromdate, $predate))->where('user_id',$op,$userid)->where('currency_id',$curid)->where('status',1)->where('isexchangelist',0)->sum('product');
                 $luy=0;
-                $product=$sum??0;
+                $product=$sum;
             }
              if($sum){
                  DB::table('user_report_details')->insert([
@@ -2226,6 +2229,18 @@ class UserCapitalController extends Controller
 
         $fee_useraffect_cashout=0;
         $fee_useraffect_cashin=0;
+
+        $empty_amt=(object)['amt'=>null,'tweight'=>null,'totalamount'=>null,'tamountdetail'=>null,'depositamt'=>null];
+        $moneytransfer1=$empty_amt;
+        $cuscharge1=$empty_amt;
+        $cashdraw_wing_other_useraccount=$empty_amt;
+        $moneytransfer_useraffectcashin_positive=$empty_amt;
+        $moneytransfer_useraffectcashin_negative=$empty_amt;
+        $moneytransfer_useraffectcashout=$empty_amt;
+        $moneytransfer_useraffectcashout_thai=$empty_amt;
+        $cuscharge_useraffect=$empty_amt;
+        $fee_affectcashin=$empty_amt;
+        $fee_affectcashout=$empty_amt;
 
         $current = Carbon::now();
         $current->timezone('Asia/Phnom_Penh');
@@ -3343,6 +3358,8 @@ class UserCapitalController extends Controller
 
         $tranname='';
         $user_customer=[];
+        $sign=1;
+        $sum=collect();
         // $user=User::find($userid);
         // if($user){
         //     $user_customer=explode(',',$user->customer_connect);
@@ -4100,6 +4117,8 @@ class UserCapitalController extends Controller
         if($user){
             $user_customer=explode(',',$user->customer_connect);
         }
+        $mekun=1;
+        $transfers=collect();
         if($mode==0){
             $mekun=1;
             $transfers=PartnerTransfer::where('user_id',$request->userid)->whereDate('dd',$trandate)->where('trancode',1)->where('status',1)->where('currency_id',$request->cur)->whereNull('thai_amt')->get();
@@ -5340,6 +5359,7 @@ class UserCapitalController extends Controller
         $gold=0;
         $note='';
         $shortcut='';
+        $tranname='';
         $current = Carbon::now();
         $current->timezone('Asia/Phnom_Penh');
         $date = str_replace('/', '-', $request->trandate);
@@ -5425,6 +5445,7 @@ class UserCapitalController extends Controller
         $thb1=0;
         $vnd1=0;
         $cuschargenotthesamecur=0;
+        $transfers=collect();
         $current = Carbon::now();
         $current->timezone('Asia/Phnom_Penh');
         // $date = str_replace('/', '-', $request->trandate);
@@ -6148,6 +6169,8 @@ class UserCapitalController extends Controller
         $shortcut='';
         $tranname='';
         $tablename='';
+        $mekun=1;
+        $transfers=collect();
         $current = Carbon::now();
         $current->timezone('Asia/Phnom_Penh');
         $date = str_replace('/', '-', $request->trandate);
@@ -6372,7 +6395,7 @@ class UserCapitalController extends Controller
                         $gold=$ch->tcharge;
                     }else{
                         $fn=$ch->tcharge;
-                        $shortcut=$tr->cuschargecur->shortcut;
+                        $shortcut=$ch->cuschargecur->shortcut;
                     }
                 }
 
@@ -7232,6 +7255,8 @@ class UserCapitalController extends Controller
         $accepttime = date("H:i:s",strtotime($current));
         $trdate = str_replace('/', '-', $request->offerdate_accept);
         $trandate= date('Y-m-d', strtotime($trdate));
+        $id1=0;
+        $id2=0;
         $uc1=new UserCapital();
         $uc1->trandate=$trandate;
         $uc1->trantime=$accepttime;
@@ -7487,8 +7512,8 @@ class UserCapitalController extends Controller
                       $ptf1->fee=0;
                       $ptf1->fee_currency_id=$request->selcur3;
                       $ptf1->bonus=0;
-                      $ptf->sendername='user offer money';
-                      // $ptf->sendertel=str_replace(' ','',$request->sendertel);
+                      $ptf1->sendername='user offer money';
+                      // $ptf1->sendertel=str_replace(' ','',$request->sendertel);
                       // $ptf1->recname=$request->txtaccountname44;
                       // $ptf1->rectel=str_replace(' ','',$request->txtaccountnumber44);
                       if($request->customertype1=='BANK' || $request->customertype1=='AGENT'){
@@ -7652,8 +7677,8 @@ class UserCapitalController extends Controller
                         $ptf1->fee=0;
                         $ptf1->fee_currency_id=$request->selcur4;
                         $ptf1->bonus=0;
-                        $ptf->sendername='user offer money';
-                        // $ptf->sendertel=str_replace(' ','',$request->sendertel);
+                        $ptf1->sendername='user offer money';
+                        // $ptf1->sendertel=str_replace(' ','',$request->sendertel);
                         // $ptf1->recname=$request->txtaccountname44;
                         // $ptf1->rectel=str_replace(' ','',$request->txtaccountnumber44);
                         $ptf1->ref_number=$refnumber;
@@ -7759,11 +7784,14 @@ class UserCapitalController extends Controller
         //$selcomid=Session('log_into_company_id');
         $selcomid=$request->selcompany1;
         $save=0;
+        $oldcur='';
+        $foundclose=null;
         $validator = Validator::make($request->all(), [
             'seluserreceive' => 'required',
             //'selcur' => 'required',
             //'amount' => 'required',
         ]);
+        $validator1 = Validator::make($request->all(), []);
         if($request->trid>0){
             $validator1 = Validator::make($request->all(), [
                 'selcur' => 'required',

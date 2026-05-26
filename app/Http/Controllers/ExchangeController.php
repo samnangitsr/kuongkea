@@ -212,6 +212,7 @@ class ExchangeController extends Controller
     //          'bankcur.*' => 'required', //input array validate
     //      ]);
     //  }
+     $validator3 = Validator::make($request->all(), []);
      if($request->foundpartnerlist=='1'){
 
         $validator3 = Validator::make($request->all(), [
@@ -384,6 +385,7 @@ class ExchangeController extends Controller
     //      ]);
     //  }
     $selcomid=Session('log_into_company_id');
+    $validator3 = Validator::make($r->all(), []);
     if($r->foundpartnerlist=='1'){
         $validator3 = Validator::make($r->all(), [
             'parrent_id.*' => 'required', //input array validate
@@ -434,7 +436,7 @@ class ExchangeController extends Controller
             $e1->currency_id=$r->curid1;
             $e1->product=str_replace(',','',$r->item1);
             $e1->pcur=$r->pcur1;
-            $e1->amount=-1 * str_replace(',','',$luy);
+            $e1->amount=-1 * floatval(str_replace(',','',$luy));
             $e1->maincur='USD';
             $e1->rate=str_replace(',','',$rate_buy);
             $e1->drate=str_replace(',','',$rate_buy);
@@ -462,7 +464,7 @@ class ExchangeController extends Controller
             $e2->dd=$exchangedate;
             $e2->tt=$invtime;
             $e2->currency_id=$r->curid2;
-            $e2->product=-1 * str_replace(',','',$r->item2);
+            $e2->product=-1 * floatval(str_replace(',','',$r->item2));
             $e2->pcur=$r->pcur2;
             $e2->amount=str_replace(',','',$luy);
             $e2->maincur='USD';
@@ -545,7 +547,7 @@ class ExchangeController extends Controller
             $e1->currency_id=$r->curid2;
             $e1->product=str_replace(',','',$r->item2);
             $e1->pcur=$r->pcur2;
-            $e1->amount=-1 * str_replace(',','',$luy);
+            $e1->amount=-1 * floatval(str_replace(',','',$luy));
             $e1->maincur='USD';
             $e1->rate=str_replace(',','',$rate_buy);
             $e1->drate=str_replace(',','',$rate_buy);
@@ -568,7 +570,7 @@ class ExchangeController extends Controller
             $e2->dd=$exchangedate;
             $e2->tt=$invtime;
             $e2->currency_id=$r->curid1;
-            $e2->product=-1 * str_replace(',','',$r->item1);
+            $e2->product=-1 * floatval(str_replace(',','',$r->item1));
             $e2->pcur=$r->pcur1;
             $e2->amount=str_replace(',','',$luy);
             $e2->maincur='USD';
@@ -1628,6 +1630,7 @@ class ExchangeController extends Controller
     //      ]);
     //  }
     $selcomid=Session('log_into_company_id');
+    $validator3 = Validator::make($request->all(), []);
     if($request->foundpartnerlist=='1'){
       $validator3 = Validator::make($request->all(), [
           'parrent_id.*' => 'required', //input array validate
@@ -1646,6 +1649,8 @@ class ExchangeController extends Controller
       }
       $multi_id='';
       $total_luy=0;
+      $e1_id=null;
+      $luy_id=null;
       $current = Carbon::now();
       $current->timezone('Asia/Phnom_Penh');
       $invtime = date("H:i:s",strtotime($current));
@@ -1761,7 +1766,7 @@ class ExchangeController extends Controller
             $e2->dd=$exchangedate;
             $e2->tt=$invtime;
             $e2->currency_id=$saleinfoes[0];
-            $e2->product=-1 * str_replace(',','',$request->txtsales[$key]);
+            $e2->product=-1 * floatval(str_replace(',','',$request->txtsales[$key]));
             $e2->pcur=$request->txtcursales[$key];
             $e2->amount=$luy;
             $e2->maincur='USD';
@@ -1840,6 +1845,18 @@ class ExchangeController extends Controller
     //return $request->all();
       $selcomid=Session('log_into_company_id');
         $logo=Company::find($selcomid);
+        $sumdeposit=0;
+        $deposit_via='';
+        $balance=0;
+        $sum_exchange=0;
+        $exchanges=collect();
+        $totalbuy=collect();
+        $totalsale=collect();
+        $currencies=collect();
+        $bankpayments=collect();
+        $cashreceive_cm=collect();
+        $cashreturn_cm=collect();
+        $cash=collect();
         if($request->isgold_deposit==1){
             $sumdeposit=0;
             $deposit_via='';
@@ -2093,8 +2110,8 @@ class ExchangeController extends Controller
         $sumamount=Exchange::where('status',1)->where('ref_group_id',$e->ref_group_id)->sum('amount');
         $balance=PartnerTransfer::where('status',1)->where('ref_group_id',$e->ref_group_id)->where('rectel',$e->phone)->sum('amount');
         if($e->id==$e->multiexchangecode){
-            $e->balance=$balance??0;
-            $e->sumamount=$sumamount??0;
+            $e->balance=$balance;
+            $e->sumamount=$sumamount;
         }else{
             $e->balance=0;
             $e->sumamount=0;
@@ -2106,8 +2123,8 @@ class ExchangeController extends Controller
         $sumamount=Exchange::where('status',1)->where('ref_group_id',$e->ref_group_id)->sum('amount');
         $balance=PartnerTransfer::where('status',1)->where('ref_group_id',$e->ref_group_id)->where('rectel',$e->phone)->sum('amount');
         if($e->id==$e->multiexchangecode){
-            $e->balance=$balance??0;
-            $e->sumamount=$sumamount??0;
+            $e->balance=$balance;
+            $e->sumamount=$sumamount;
         }else{
             $e->balance=0;
             $e->sumamount=0;
@@ -2151,8 +2168,8 @@ class ExchangeController extends Controller
             $sumamount=Exchange::where('status',1)->where('ref_group_id',$e->ref_group_id)->sum('amount');
             $balance=PartnerTransfer::where('status',1)->where('ref_group_id',$e->ref_group_id)->where('rectel',$e->phone)->sum('amount');
             if($e->id==$e->multiexchangecode){
-                $e->balance=$balance??0;
-                $e->sumamount=$sumamount??0;
+                $e->balance=$balance;
+                $e->sumamount=$sumamount;
             }else{
                 $e->balance=0;
                 $e->sumamount=0;
@@ -2162,8 +2179,8 @@ class ExchangeController extends Controller
             $sumamount=Exchange::where('status',1)->where('ref_group_id',$e->ref_group_id)->sum('amount');
             $balance=PartnerTransfer::where('status',1)->where('ref_group_id',$e->ref_group_id)->where('rectel',$e->phone)->sum('amount');
             if($e->id==$e->multiexchangecode){
-                $e->balance=$balance??0;
-                $e->sumamount=$sumamount??0;
+                $e->balance=$balance;
+                $e->sumamount=$sumamount;
             }else{
                 $e->balance=0;
                 $e->sumamount=0;

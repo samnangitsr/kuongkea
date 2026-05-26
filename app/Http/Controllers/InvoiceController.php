@@ -88,6 +88,7 @@ class InvoiceController extends Controller
         $date = str_replace('/', '-', $request->invdate);
         $invdate= date('Y-m-d', strtotime($date));
         $actionfrom=$request->actionfrom;
+        $validator = Validator::make($request->all(), []);
         if($actionfrom=='btnsave' || $actionfrom=='btnsaveprint'){
             if($request->weights){
                 $validator = Validator::make($request->all(), [
@@ -175,18 +176,18 @@ class InvoiceController extends Controller
                 $invoice->invtime=$invtime;
                 $invoice->user_id=Auth::id();
                 $invoice->customer_id=$request->selcustomer;
-                $invoice->totalweight= $mekun * str_replace(',','',$request->weight);
-                $invoice->total=-1 * $mekun * str_replace(',','',$request->total);
+                $invoice->totalweight= $mekun * floatval(str_replace(',','',$request->weight));
+                $invoice->total=-1 * $mekun * floatval(str_replace(',','',$request->total));
                 $invoice->cur=$request->txtcur1;
                 $invoice->deposit=str_replace(',','',$request->deposit);
                 if($invoice->save()){
                     $id=$invoice->id;
                     $invoicedetail=new InvoiceDetail();
                     $invoicedetail->invoice_id=$id;
-                    $invoicedetail->weight=$mekun * str_replace(',','',$request->weight);
+                    $invoicedetail->weight=$mekun * floatval(str_replace(',','',$request->weight));
                     $invoicedetail->water=$request->water;
                     $invoicedetail->price=$request->price;
-                    $invoicedetail->amount=-1 * $mekun * str_replace(',','',$request->total) ;
+                    $invoicedetail->amount=-1 * $mekun * floatval(str_replace(',','',$request->total)) ;
                     $invoicedetail->cur=$request->txtcur1;
                    
                     if($invoicedetail->save()){
