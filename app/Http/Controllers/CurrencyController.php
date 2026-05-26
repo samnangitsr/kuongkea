@@ -417,11 +417,11 @@ class CurrencyController extends Controller
     protected function sendToTelegramGroup($imagePath)
 {
     if(config('helper.transfer_option') == 'kuongkea'){
-        $token = env('KUONGKEA_BOT_TOKEN');
-        $chatId = env('KUONGKEA_CHAT_ID'); // can be user, group, or channel
+        $token = config('services.kuongkea.bot_token');
+        $chatId = config('services.kuongkea.chat_id');
     }else{
-        $token = env('TELEGRAM_BOT_TOKEN');
-        $chatId = env('TELEGRAM_CHAT_ID'); // can be user, group, or channel
+        $token = config('services.telegram.bot_token');
+        $chatId = config('services.telegram.chat_id');
 
     }
 
@@ -443,8 +443,8 @@ class CurrencyController extends Controller
 }
 protected function sendToFacebookPage($imagePath)
 {
-    $pageToken = env('FB_VERIFY_TOKEN');
-    $recipientId = env('FB_PAGE_ID');
+    $pageToken = config('services.facebook.verify_token');
+    $recipientId = config('services.facebook.page_id');
 
     $client = new \GuzzleHttp\Client();
 

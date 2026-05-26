@@ -24,7 +24,7 @@ class TrackOnlineUsers
                 'ip_address'=> $request->ip(),
                 //'url'       => $request->fullUrl(), // full URL from browser bar
                 //'url'       =>env("APP_URL") . $request->getRequestUri(), // like window.location.pathname
-                'url'       =>env("APP_URL") . '/' . $request->path(), // like /dashboard
+                'url'       =>config('app.url') . '/' . $request->path(), // like /dashboard
             ],
             [
                 'last_activity' => now(),

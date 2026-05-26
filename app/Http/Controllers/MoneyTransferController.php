@@ -3150,7 +3150,7 @@ class MoneyTransferController extends Controller
                         $found_group='';
                         $cashdraw_id=$cashdraw->id;
                         $userprint=Auth::user()->name;
-                        DB::table('partner_transfers')->where('id',$id1)->update(['iscashdraw'=>'1','cashdraw_id'=>$cashdraw_id,'ref_number'=>'cashdraw-'.$cashdraw_id,'map_id'=>null,'ref_number'=>null,'ref_group_id'=>null]);
+                        DB::table('partner_transfers')->where('id',$id1)->update(['iscashdraw'=>'1','cashdraw_id'=>$cashdraw_id,'ref_number'=>'cashdraw-'.$cashdraw_id,'map_id'=>null,'ref_group_id'=>null]);
                     }
 
             }

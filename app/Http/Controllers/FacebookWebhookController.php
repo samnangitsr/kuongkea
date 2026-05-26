@@ -14,7 +14,7 @@ class FacebookWebhookController extends Controller
     // GET verification
     public function verify(Request $request)
     {
-        $verify_token = env('FB_VERIFY_TOKEN'); // set in .env
+        $verify_token = config('services.facebook.verify_token');
 
         $mode = $request->get('hub_mode') ?? $request->get('hub.mode');
         $token = $request->get('hub_verify_token') ?? $request->get('hub.verify_token');
