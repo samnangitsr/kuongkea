@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ID Card Generator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+      flex-wrap: wrap;
+    }
+
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+    }
+
+    form input, form label {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    input[type="text"], input[type="email"], input[type="file"] {
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .id-card {
+      width: 320px;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .id-photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #f0c040;
+      margin-top: 10px;
+    }
+
+    .barcode {
+      margin-top: 10px;
+      height: 40px;
+    }
+    #cardheader{
+        background-color: #007bff;
+    }
+    .id-card{
+        background-color: greenyellow;
+    }
+    .print-button {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <form id="infoForm">
+      <label for="photo">Photo</label>
+      <input type="file" id="photo" accept="image/*">
+      <label for="name">Name</label>
+      <input type="text" id="name">
+      <label for="position">Position</label>
+      <input type="text" id="position">
+      <label for="id">ID</label>
+      <input type="text" id="id">
+      <label for="email">Email</label>
+      <input type="email" id="email">
+      <label for="phone">Phone</label>
+      <input type="text" id="phone">
+      <label for="barcode">Barcode (Image)</label>
+      <input type="file" id="barcode" accept="image/*">
+    </form>
+
+    <div class="id-card" id="idCard" style="">
+      <h2>KS RESIDENT</h2>
+      <img src="" id="idPhoto" class="id-photo" alt="Photo">
+      <h3 id="cardName">Morgan Maxwell</h3>
+      <p><strong id="cardPosition">Manager</strong></p>
+      <p><strong>ID:</strong> <span id="cardId">1234567890</span></p>
+      <p><strong>Email:</strong> <span id="cardEmail">hello@reallygreatsite.com</span></p>
+      <p><strong>Phone:</strong> <span id="cardPhone">+123-456-7890</span></p>
+      <img src="" id="cardBarcode" class="barcode" alt="Barcode">
+    </div>
+  </div>
+
+  <div class="print-button">
+    <button onclick="generateCard()">Generate ID Card</button>
+    <button onclick="printIDCard()">Print ID Card</button>
+  </div>
+
+  <script>
+    function generateCard() {
+      document.getElementById('cardName').textContent = document.getElementById('name').value;
+      document.getElementById('cardPosition').textContent = document.getElementById('position').value;
+      document.getElementById('cardId').textContent = document.getElementById('id').value;
+      document.getElementById('cardEmail').textContent = document.getElementById('email').value;
+      document.getElementById('cardPhone').textContent = document.getElementById('phone').value;
+
+      const photo = document.getElementById('photo').files[0];
+      const barcode = document.getElementById('barcode').files[0];
+
+      if (photo) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById('idPhoto').src = e.target.result;
+        };
+        reader.readAsDataURL(photo);
+      }
+
+      if (barcode) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById('cardBarcode').src = e.target.result;
+        };
+        reader.readAsDataURL(barcode);
+      }
+    }
+
+    function printIDCard() {
+  const printWindow = window.open('', '_blank');
+  const cardContent = document.getElementById('idCard').outerHTML;
+
+  const styles = `
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        text-align: center;
+        padding: 20px;
+      }
+      .id-photo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #f0c040;
+        margin-top: 10px;
+      }
+      .barcode {
+        margin-top: 10px;
+        height: 40px;
+      }
+
+        .id-card{
+        background-color: greenyellow;
+    }
+    </style>
+  `;
+
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print ID Card</title>
+        ${styles}
+      </head>
+      <body>
+        ${cardContent}
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+  printWindow.close();
+}
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,18 @@
+<?php
+
+namespace App;
+
+use App\Currency;
+use Illuminate\Database\Eloquent\Model;
+
+class DailyCloseList extends Model
+{
+    public function customer()
+    {
+    	return $this->belongsTo('App\Customer');
+    }
+    public function user()
+    {
+    	return $this->belongsTo('App\User');
+    }
+}
