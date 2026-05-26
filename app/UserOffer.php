@@ -4,6 +4,23 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed $amount
+ * @property mixed $amount1
+ * @property mixed $company_id
+ * @property mixed $created_at
+ * @property mixed $currency_id
+ * @property mixed $currency_id1
+ * @property mixed $customer_id
+ * @property mixed $customer_id1
+ * @property mixed $offer_by_user_id
+ * @property mixed $offer_date
+ * @property mixed $offer_time
+ * @property mixed $offer_to_user_id
+ * @property mixed $offer_type
+ * @property mixed $offer_type1
+ * @property mixed $updated_at
+ */
 class UserOffer extends Model
 {
     public function currency()

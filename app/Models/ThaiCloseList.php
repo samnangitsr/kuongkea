@@ -5,6 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed $balance
+ * @property mixed $closedate
+ * @property mixed $closetime
+ * @property mixed $created_at
+ * @property mixed $lastsmsid
+ * @property mixed $thai_account_id
+ * @property mixed $updated_at
+ * @property mixed $user_id
+ */
 class ThaiCloseList extends Model
 {
     use HasFactory;

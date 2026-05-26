@@ -4,6 +4,27 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed $amount
+ * @property mixed $created_at
+ * @property mixed $currency_id
+ * @property mixed $cuscharge
+ * @property mixed $cuscharge_currency_id
+ * @property mixed $dd
+ * @property mixed $fee
+ * @property mixed $fee_currency_id
+ * @property mixed $mekun
+ * @property mixed $parrent_id
+ * @property mixed $recname
+ * @property mixed $rectel
+ * @property mixed $sendername
+ * @property mixed $sendertel
+ * @property mixed $trancode
+ * @property mixed $tranname
+ * @property mixed $updated_at
+ * @property mixed $user_affect
+ * @property mixed $user_id
+ */
 class PartnerTransferTemp extends Model
 {
   public function user()

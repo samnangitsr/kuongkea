@@ -5,6 +5,11 @@ namespace App;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed $name
+ * @property mixed $thai_list
+ * @property mixed $user_connect
+ */
 class Customer extends Model
 {
     public function agenttype()

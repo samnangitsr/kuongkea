@@ -5,6 +5,12 @@ namespace App;
 use App\Currency;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed $tkhr
+ * @property mixed $tthb
+ * @property mixed $tusd
+ * @property mixed $tvnd
+ */
 class DailyCloseList extends Model
 {
     public function customer()

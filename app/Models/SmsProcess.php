@@ -8,6 +8,34 @@ use App\CashdrawSelect;
 use App\PartnerTransfer;
 use App\Exchange;
 
+/**
+ * @property mixed $amount
+ * @property mixed $amt
+ * @property mixed $company_id
+ * @property mixed $created_at
+ * @property mixed $currency
+ * @property mixed $currency_id
+ * @property mixed $cut_seva
+ * @property mixed $group_id
+ * @property mixed $isgetcode
+ * @property mixed $missioncomplete
+ * @property mixed $note
+ * @property mixed $opdate
+ * @property mixed $optime
+ * @property mixed $other
+ * @property mixed $paymethod
+ * @property mixed $receive_name
+ * @property mixed $recname
+ * @property mixed $rectel
+ * @property mixed $sms_id
+ * @property mixed $step
+ * @property mixed $tamt
+ * @property mixed $thai_amount
+ * @property mixed $thaisms
+ * @property mixed $updated_at
+ * @property mixed $user
+ * @property mixed $user_id
+ */
 class SmsProcess extends Model
 {
     use HasFactory;

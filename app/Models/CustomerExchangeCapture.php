@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed $stand_time
+ */
 class CustomerExchangeCapture extends Model
 {
     protected $fillable = ['customer_exchange_id','user_id','stand_time', 'photo','created_at','updated_at','company_id'];

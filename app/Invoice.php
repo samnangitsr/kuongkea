@@ -4,6 +4,22 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed $balance
+ * @property mixed $cur
+ * @property mixed $customer
+ * @property mixed $customer_id
+ * @property mixed $deposit
+ * @property mixed $invdate
+ * @property mixed $invtime
+ * @property mixed $payment
+ * @property mixed $pweight
+ * @property mixed $total
+ * @property mixed $totalamount
+ * @property mixed $totalweight
+ * @property mixed $tweight
+ * @property mixed $user_id
+ */
 class Invoice extends Model
 {
     public function user()

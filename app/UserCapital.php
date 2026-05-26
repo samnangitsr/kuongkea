@@ -11,6 +11,35 @@ use App\PartnerExchangeList;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed $action
+ * @property mixed $agent_id
+ * @property mixed $agent_id_reverse
+ * @property mixed $agentname
+ * @property mixed $amount
+ * @property mixed $amt
+ * @property mixed $balance
+ * @property mixed $capital_type
+ * @property mixed $company_id
+ * @property mixed $created_at
+ * @property mixed $cur
+ * @property mixed $currency
+ * @property mixed $currency_id
+ * @property mixed $note
+ * @property mixed $note1
+ * @property mixed $ref_number
+ * @property mixed $tamt
+ * @property mixed $trancode
+ * @property mixed $trandate
+ * @property mixed $tranname
+ * @property mixed $trantime
+ * @property mixed $twgold
+ * @property mixed $updated_at
+ * @property mixed $user
+ * @property mixed $user_id
+ * @property mixed $user_id_affect
+ * @property mixed $user_reverse_id
+ */
 class UserCapital extends Model
 {
     public function user()

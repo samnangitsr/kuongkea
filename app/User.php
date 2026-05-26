@@ -9,6 +9,15 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+/**
+ * @property mixed $customer_connect
+ * @property mixed $name
+ * @property mixed $password
+ * @property mixed $property_group_connect
+ * @property mixed $remote_password
+ * @property mixed $role
+ * @property mixed $session_id
+ */
 class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;

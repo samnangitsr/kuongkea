@@ -4,6 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed $pcdt
+ * @property mixed $permission_id
+ * @property mixed $user_id
+ */
 class PermissionUser extends Model
 {
     protected $table="permission_users";
