@@ -471,7 +471,7 @@
             function refreshpage()
             {
                 var url="{{ route('thaicashdraw.countsmsrefresh') }}";
-                $.get(url,{step:2},function(data){
+                $.post(url,{step:2},function(data){
                     //console.log(data)
                     if(countsmsrefresh!=data['countrow']){
                         countsmsrefresh=data['countrow'];
@@ -513,7 +513,7 @@
 
         $(document).on('click','#btnclearrefresh',function(e){
             var url="{{ route('thaicashdraw.clearrefreshaction') }}";
-            $.get(url,{},function(data){
+            $.post(url,{},function(data){
                 alert('Refresh Action Deleted');
             })
         })
@@ -644,7 +644,7 @@
             }
             var url="{{ route('thaicashdraw1.searchcashdraw1') }}";
 
-            // $.get(url,{d1:d1,d2:d2,mscp:mscp,searchmore:searchmore,searchby:searchby,tel:tel,amt1:amt1,amt2:amt2,time:time,update:update},function(data){
+            // $.post(url,{d1:d1,d2:d2,mscp:mscp,searchmore:searchmore,searchby:searchby,tel:tel,amt1:amt1,amt2:amt2,time:time,update:update},function(data){
             //     $('#cashdrawandnotyet').empty().html(data);
             //     if(mscp==0){
             //         $('#tbl_title').text('មិនទាន់រួចរាល់');
@@ -739,7 +739,7 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             async: true,
-                            type: 'GET',
+                            type: 'POST',
                             dataType:'JSON',
                             contentType: 'application/json;charset=utf-8',
                             url: "{{ route('cashdraw.delete') }}",
@@ -792,7 +792,7 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             async: true,
-                            type: 'GET',
+                            type: 'POST',
                             dataType:'JSON',
                             contentType: 'application/json;charset=utf-8',
                             url: "{{ route('cashdraw.deletebankcontinue') }}",
@@ -898,7 +898,7 @@
             var url="{{ route('thaicashdraw1.clearclick1') }}";
             var output='';
             var k=0;
-            $.get(url,{d1:d1,d2:d2},function(data){
+            $.post(url,{d1:d1,d2:d2},function(data){
                 console.log(data);
                 for(var i=0;i<data['useractions'].length;i++){
                     k+=1;
@@ -936,7 +936,7 @@
             var row = $(this).closest('tr');
             var rowind=row.find("td:eq(0)").text();
             var url="{{ route('thaideleteuseraction1') }}";
-            $.get(url,{id:id},function(data){
+            $.post(url,{id:id},function(data){
                 document.getElementById("tableclearclick").deleteRow(rowind);
                 ResetNo1();
             })
@@ -1359,7 +1359,7 @@
                 `;
                  $('#tblcashdrawcodelist').find('tbody').append(data);
             //var url="{{ route('thaicashdraw.getwingfee') }}";
-            // $.get(url,{agenttype:agenttype,amount:somnal,cur:cur},function(data){
+            // $.post(url,{agenttype:agenttype,amount:somnal,cur:cur},function(data){
             //     console.log(data)
             //     var data=`
             //         <tr class="item_out">
@@ -1603,7 +1603,7 @@
 
                 $('#tblcodelist').find('tbody').append(data);
             // var url="{{ route('thaicashdraw.getwingfee') }}";
-            // $.get(url,{agenttype:agenttype_id,amount:somnal,cur:cur},function(data){
+            // $.post(url,{agenttype:agenttype_id,amount:somnal,cur:cur},function(data){
             //     var data=`
             //         <tr class="item">
             //             <td style="padding:0px;" class="kh22-b"><input type="text" class="txtwingamt kh22-b tdcanenter" style="text-align:right;color:red;width:100%;background-color:yellow;" value="${formatNumber(somnal.toFixed(2))}" readonly></td>
@@ -1977,7 +1977,7 @@
             var url="{{ route('deleteuseractionbytransferid') }}";
             var id=$('#receive_id').val();
 
-            $.get(url,{id:id},function(data){
+            $.post(url,{id:id},function(data){
                 console.log(data);
             })
         });
@@ -2058,7 +2058,7 @@
             var id=$(this).data('id');
             var mixid=$(this).data('mixfromid');
             var url="{{ route('thaicashdraw.clearmixsms') }}";
-            // $.get(url,{id:id,mixid:mixid},function(data){
+            // $.post(url,{id:id,mixid:mixid},function(data){
             //     search_cashdraw(moresearch);
             // })
 
@@ -2134,7 +2134,7 @@
         function opencashdrawmulti(callback)
         {
           var url="{{ route('thaicashdraw.getmulticashdraw') }}";
-            $.get(url,{},function(data){
+            $.post(url,{},function(data){
               $('#diva').empty().html(data);
              callback();
 
@@ -2143,14 +2143,14 @@
         $(document).on('click','.btndeltransfertemp',function(e){
           var id=$(this).data('transferid');
           var url="{{ route('thaicashdraw.unselectcashdraw') }}";
-            $.get(url,{id:id},function(data){
+            $.post(url,{id:id},function(data){
               //console.log(data)
               opencashdrawmulti(sumcashdraw);
             })
         })
         $(document).on('click','#btncleartransferlist',function(e){
           var url="{{ route('thaicashdraw.clearcashdrawselect') }}";
-            $.get(url,{},function(data){
+            $.post(url,{},function(data){
               //console.log(data)
               opencashdrawmulti(sumcashdraw);
             })
@@ -2527,7 +2527,7 @@
         function unselect(id,el)
         {
           var url="{{ route('thaicashdraw.unselectcashdraw') }}";
-            $.get(url,{id:id},function(data){
+            $.post(url,{id:id},function(data){
               if(data.del2==1){
                 el.text('select');
               }
@@ -2540,7 +2540,7 @@
             $('#body_exchangedata').empty();
             var groupid=$('#groupid').val();
             var url="{{ route('thaicashdraw1.resetexchange') }}";
-            $.get(url,{groupid:groupid},function(data){
+            $.post(url,{groupid:groupid},function(data){
                 console.log(data)
 
                 for(var i=0;i<data['exchanges'].length;i++){
@@ -2607,7 +2607,7 @@
             //   }
             try{
                 var url="{{ route('thaicashdraw1.opencashdraw1new') }}";
-                $.get(url,{id:id,groupid:groupid},function(data){
+                $.post(url,{id:id,groupid:groupid},function(data){
                 //console.log(data)
                 if(data.error==true){//if return view
                     alert('You can not open this money.\n' + data.errorsms);
@@ -2804,7 +2804,7 @@
             $('#openamt').val(formatNumber(openamt));
 
             var url="{{ route('thaicashdraw1.opencashdraw1') }}";
-            $.get(url,{id:id,groupid:groupid},function(data){
+            $.post(url,{id:id,groupid:groupid},function(data){
                console.log(data)
                 //debugger;
                 if(data.error==true){//if return view
@@ -3524,7 +3524,7 @@
             var id=$(this).data('id');
             var groupid=$(this).data('groupid');
             var url="{{ route('thaicashdraw.updatestep') }}";
-            $.get(url,{step:step,mscp:mscp,id:id,groupid:groupid},function(data){
+            $.post(url,{step:step,mscp:mscp,id:id,groupid:groupid},function(data){
                 if(data.error==false){
                     search_cashdraw(0);
                 }else{
@@ -4328,7 +4328,7 @@
     {
         //debugger;
         var url="{{ route('getcurrencybykey') }}";
-        $.get(url,{key:key},function(data){
+        $.post(url,{key:key},function(data){
             //console.log(data)
                 if(data['c']!=null){
                     $(el).val(data['c']['shortcut']);
@@ -4395,7 +4395,7 @@
                 curname = salecur + '-' + buycur;
             }
             //alert(curname)
-            $.get(url,{curname:curname},function(data){
+            $.post(url,{curname:curname},function(data){
                 if(data.success){
 
 
@@ -4625,7 +4625,7 @@
         //     var url="{{ route('getproductrate') }}";
         //     var curname = '';
         //     curname = buycur + '-' + salecur;
-        //     $.get(url,{curname:curname},function(data){
+        //     $.post(url,{curname:curname},function(data){
         //         if(data.success){
         //             //debugger;
         //             $('#exchangerate3').val(formatNumber(parseFloat(data['pr']['rate'])));
@@ -4781,7 +4781,7 @@
         curname = buycur + '-' + salecur;
 
           //alert(curname)
-          $.get(url,{curname:curname},function(data){
+          $.post(url,{curname:curname},function(data){
               if(data.success){
                     //debugger;
                   $('.bankrate').eq(ind).val(formatNumber(parseFloat(data['pr']['rate'])));

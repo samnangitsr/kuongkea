@@ -300,7 +300,7 @@
             if (result.isConfirmed) {
                 $.ajax({
                     async: true,
-                    type: 'GET',
+                    type: 'POST',
                     dataType:'JSON',
                     contentType: 'application/json;charset=utf-8',
                     url: "{{ route('expanseincome.delete') }}",
@@ -352,7 +352,7 @@
             if (result.isConfirmed) {
                 $.ajax({
                     async: true,
-                    type: 'GET',
+                    type: 'POST',
                     dataType:'JSON',
                     contentType: 'application/json;charset=utf-8',
                     url: "{{ route('expanseincome.deletetype') }}",
@@ -645,7 +645,7 @@
 
         $.ajax({
                 async:true,
-                type: 'GET',
+                type: 'POST',
                 url: url,
                 data: {group_id:group_id},
                 //contentType: 'text/plain',
@@ -795,7 +795,7 @@
 
         $.ajax({
                 async:true,
-                type: 'GET',
+                type: 'POST',
                 url: url,
                 data: {d:d,user_id:user_id,location_id:5},
                 //contentType: 'text/plain',

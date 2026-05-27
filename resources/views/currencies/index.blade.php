@@ -702,7 +702,7 @@
 
                             $.ajax({
                                 async: true,
-                                type: 'GET',
+                                type: 'POST',
                                 dataType:'JSON',
                                 contentType: 'application/json;charset=utf-8',
                                 url: "{{ route('deletecurrency') }}",
@@ -754,7 +754,7 @@
 
                             $.ajax({
                                 async: true,
-                                type: 'GET',
+                                type: 'POST',
                                 dataType:'JSON',
                                 contentType: 'application/json;charset=utf-8',
                                 url: "{{ route('deletecurrencybutton') }}",
@@ -806,7 +806,7 @@
 
                         $.ajax({
                             async: true,
-                            type: 'GET',
+                            type: 'POST',
                             dataType:'JSON',
                             contentType: 'application/json;charset=utf-8',
                             url: "{{ route('restorecurrency') }}",

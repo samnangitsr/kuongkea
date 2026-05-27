@@ -307,7 +307,7 @@ function phpformatnumber($num){
                     if (result.isConfirmed) {
                         $.ajax({
                             async: true,
-                            type: 'GET',
+                            type: 'POST',
                             dataType:'JSON',
                             contentType: 'application/json;charset=utf-8',
                             url: "{{ route('customerexchangecapture.delete') }}",
@@ -357,7 +357,7 @@ function phpformatnumber($num){
                     if (result.isConfirmed) {
                         $.ajax({
                             async: true,
-                            type: 'GET',
+                            type: 'POST',
                             dataType:'JSON',
                             contentType: 'application/json;charset=utf-8',
                             url: "{{ route('customerexchangecapture.deleteall') }}",

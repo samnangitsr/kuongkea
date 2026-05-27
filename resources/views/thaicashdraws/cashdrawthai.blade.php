@@ -1031,7 +1031,7 @@ function updateTransform() {
             var url="{{ route('getpartnerbytype') }}";
             $(el).empty();
 
-            $.get(url,{type:type},function(data){
+            $.post(url,{type:type},function(data){
                 $(el).append($("<option/>",{
                             value:'',
                             text:''
@@ -1313,7 +1313,7 @@ function updateTransform() {
             var amt2=$('#txtsearchbyamt2').val().replace(/,/g, '');
             var searchby=$('#selsearchby').val();
             var url="{{ route('thaicashdraw.searchcashdraw') }}";
-            // $.get(url,{d1:d1,d2:d2,partner:partner,user:user,searchby:searchby,tel:tel,amt1:amt1,amt2:amt2,searchmore:searchmore},function(data){
+            // $.post(url,{d1:d1,d2:d2,partner:partner,user:user,searchby:searchby,tel:tel,amt1:amt1,amt2:amt2,searchmore:searchmore},function(data){
             //     $('#cashdrawandnotyet').empty().html(data);
             // })
 
@@ -1399,7 +1399,7 @@ function updateTransform() {
                     if (result.isConfirmed) {
                         $.ajax({
                             async: true,
-                            type: 'GET',
+                            type: 'POST',
                             dataType:'JSON',
                             contentType: 'application/json;charset=utf-8',
                             url: "{{ route('cashdraw.delete') }}",
@@ -1452,7 +1452,7 @@ function updateTransform() {
                     if (result.isConfirmed) {
                         $.ajax({
                             async: true,
-                            type: 'GET',
+                            type: 'POST',
                             dataType:'JSON',
                             contentType: 'application/json;charset=utf-8',
                             url: "{{ route('cashdraw.deletebankcontinue') }}",
@@ -1556,7 +1556,7 @@ function updateTransform() {
             var url="{{ route('thaicashdraw.clearclick') }}";
             var output='';
             var k=0;
-            $.get(url,{d1:d1,d2:d2},function(data){
+            $.post(url,{d1:d1,d2:d2},function(data){
 
                 for(var i=0;i<data['useractions'].length;i++){
                     k+=1;
@@ -1583,7 +1583,7 @@ function updateTransform() {
             var url="{{ route('thaicashdraw1.clearclick1') }}";
             var output='';
             var k=0;
-            $.get(url,{d1:d1,d2:d2},function(data){
+            $.post(url,{d1:d1,d2:d2},function(data){
 
                 for(var i=0;i<data['useractions'].length;i++){
                     k+=1;
@@ -1608,7 +1608,7 @@ function updateTransform() {
             var row = $(this).closest('tr');
             var rowind=row.find("td:eq(0)").text();
             var url="{{ route('thaideleteuseraction') }}";
-            $.get(url,{id:id},function(data){
+            $.post(url,{id:id},function(data){
                 document.getElementById("tableclearclick").deleteRow(rowind);
                 ResetNo1();
             })
@@ -1619,7 +1619,7 @@ function updateTransform() {
             var rowind = $(this).closest('tr').index();
 
             var url="{{ route('thaideleteuseraction') }}";
-            $.get(url,{id:id},function(data){
+            $.post(url,{id:id},function(data){
                 $('.btnselectcashdraw').eq(rowind).text('select');
             })
        })
@@ -2092,7 +2092,7 @@ function updateTransform() {
                 `;
                 $('#tblcodelist').find('tbody').append(data);
             //var url="{{ route('thaicashdraw.getwingfee') }}";
-            // $.get(url,{agenttype:agenttype,amount:somnal,cur:cur},function(data){
+            // $.post(url,{agenttype:agenttype,amount:somnal,cur:cur},function(data){
 
             //     var data=`
             //         <tr class="item">
@@ -2248,7 +2248,7 @@ function updateTransform() {
         }
         if(somnal!==0){
             var url="{{ route('thaicashdraw.getwingfee') }}";
-            $.get(url,{agenttype:agenttype,amount:somnal,cur:cur},function(data){
+            $.post(url,{agenttype:agenttype,amount:somnal,cur:cur},function(data){
 
                 var data=`
                     <tr class="item_out">
@@ -2406,7 +2406,7 @@ function updateTransform() {
             $('#body_exchangedata0').empty();
             var groupid=$('#groupid0').val();
             var url="{{ route('thaicashdraw1.resetexchange') }}";
-            $.get(url,{groupid:groupid},function(data){
+            $.post(url,{groupid:groupid},function(data){
 
 
                 for(var i=0;i<data['exchanges'].length;i++){
@@ -2683,7 +2683,7 @@ function updateTransform() {
             var url="{{ route('deleteuseractionbytransferid') }}";
             var id=$('#receive_id').val();
 
-            $.get(url,{id:id},function(data){
+            $.post(url,{id:id},function(data){
 
             })
         });
@@ -3004,7 +3004,7 @@ function updateTransform() {
             $('#openamt0').val(formatNumber(amount-cutseva));
 
             var url="{{ route('thaicashdraw1.opencashdraw1') }}";
-            $.get(url,{id:id,groupid:groupid},function(data){
+            $.post(url,{id:id,groupid:groupid},function(data){
 
                 //debugger;
                 if(data.error==true){//if return view
@@ -3251,7 +3251,7 @@ function updateTransform() {
             var id=$(this).data('id');
             var mixid=$(this).data('mixfromid');
             var url="{{ route('thaicashdraw.clearmixsms') }}";
-            // $.get(url,{id:id,mixid:mixid},function(data){
+            // $.post(url,{id:id,mixid:mixid},function(data){
             //     search_cashdraw(moresearch);
             // })
 
@@ -3327,7 +3327,7 @@ function updateTransform() {
         function opencashdrawmulti(callback)
         {
           var url="{{ route('thaicashdraw.getmulticashdraw') }}";
-            $.get(url,{},function(data){
+            $.post(url,{},function(data){
               $('#diva').empty().html(data);
              callback();
 
@@ -3336,14 +3336,14 @@ function updateTransform() {
         $(document).on('click','.btndeltransfertemp',function(e){
           var id=$(this).data('transferid');
           var url="{{ route('thaicashdraw.unselectcashdraw') }}";
-            $.get(url,{id:id},function(data){
+            $.post(url,{id:id},function(data){
 
               opencashdrawmulti(sumcashdraw);
             })
         })
         $(document).on('click','#btncleartransferlist',function(e){
           var url="{{ route('thaicashdraw.clearcashdrawselect') }}";
-            $.get(url,{},function(data){
+            $.post(url,{},function(data){
 
               opencashdrawmulti(sumcashdraw);
             })
@@ -3779,7 +3779,7 @@ function updateTransform() {
         function unselect(id,el)
         {
           var url="{{ route('thaicashdraw.unselectcashdraw') }}";
-            $.get(url,{id:id},function(data){
+            $.post(url,{id:id},function(data){
               if(data.del2==1){
                 el.text('select');
               }
@@ -3794,7 +3794,7 @@ function updateTransform() {
             var amtset=$('#txtsearchbyamt1').attr('title');
             //debugger;
             var url="{{ route('thaicashdraw.opencashdraw') }}";
-            $.get(url,{id:id,amtset:amtset,isselect:isselect},function(data){
+            $.post(url,{id:id,amtset:amtset,isselect:isselect},function(data){
                 //debugger;
                 if(data.error==true){//if return view
                     alert('You can not open this money.\n' + data.errorsms);
@@ -5136,7 +5136,7 @@ function updateTransform() {
                 curname = salecur + '-' + buycur;
             }
             //alert(curname)
-            $.get(url,{curname:curname},function(data){
+            $.post(url,{curname:curname},function(data){
                 if(data.success){
 
                     $('#txtrate').val(formatNumber(parseFloat(data['pr']['rate'])));
@@ -5176,7 +5176,7 @@ function updateTransform() {
     {
         //debugger;
         var url="{{ route('getcurrencybykey') }}";
-        $.get(url,{key:key},function(data){
+        $.post(url,{key:key},function(data){
             //console.log(data)
                 if(data['c']!=null){
                     $(el).val(data['c']['shortcut']);
@@ -5243,7 +5243,7 @@ function updateTransform() {
                 curname = salecur + '-' + buycur;
             }
             //alert(curname)
-            $.get(url,{curname:curname},function(data){
+            $.post(url,{curname:curname},function(data){
                 if(data.success){
 
 
@@ -5538,7 +5538,7 @@ function updateTransform() {
           var curname = '';
           curname = buycur + '-' + salecur;
           //alert(curname)
-          $.get(url,{curname:curname},function(data){
+          $.post(url,{curname:curname},function(data){
               if(data.success){
                     //debugger;
                   $(bankrate).eq(ind).val(formatNumber(parseFloat(data['pr']['rate'])));

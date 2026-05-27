@@ -254,7 +254,7 @@
                 var url="{{ route('getcustomercompany') }}";
                 $(el).empty();
                 var arr=[];
-                $.get(url,{company:company},function(data){
+                $.post(url,{company:company},function(data){
                     // $(el).append($("<option/>",{
                     //             value:'',
                     //             text:''
@@ -360,7 +360,7 @@
                 var id=$(this).data('id');
 
                 var url="{{ route('switchstatus') }}";
-                $.get(url,{id:id,active:active},function(data){
+                $.post(url,{id:id,active:active},function(data){
                     refresh();
                 })
             })
@@ -369,7 +369,7 @@
                 var id=$(this).data('id');
 
                 var url="{{ route('switchblock') }}";
-                $.get(url,{id:id,block:block},function(data){
+                $.post(url,{id:id,block:block},function(data){
                     refresh();
                 })
             })
@@ -460,7 +460,7 @@
                 var url="{{ route('refreshuser') }}";
                 var radsel=$('input[name="radact"]:checked').val();
                 var company=$('#selcompany').val();
-                $.get(url,{radact:radsel,selcompany:company},function(data){
+                $.post(url,{radact:radsel,selcompany:company},function(data){
                     $('#tbl_user').empty().html(data);
                 })
             }
@@ -478,7 +478,7 @@
             function getuser_right(id) {
 
                 var url="{{ route('getuser_right') }}";
-                $.get(url,{id:id},function(data){
+                $.post(url,{id:id},function(data){
                     //console.log(data)
                     //alert(data[0]['pivot'].pcdt)
                     $('#userpermission').empty().html(data);
@@ -574,7 +574,7 @@
                 $('#applyright_modal').modal('show');
                 var url="{{ route('applyright') }}";
                 var uid=$('#us_id').val();
-                $.get(url,{uid:uid},function(data){
+                $.post(url,{uid:uid},function(data){
                     $('#userlist').empty().html(data);
                 })
             })

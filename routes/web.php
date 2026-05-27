@@ -59,7 +59,9 @@ Route::get('/checkrefreshpage', [App\Http\Controllers\CurrencyController::class,
 Route::get('/savepermuserstorage',[App\Http\Controllers\CustomAuth\LoginController::class,'savepermuserstorage'])->name('savepermuserstorage');
 
 Route::get('/login',[App\Http\Controllers\CustomAuth\LoginController::class,'showLogin'])->name('showlogin');
-Route::post('/login',[App\Http\Controllers\CustomAuth\LoginController::class,'checkLogin'])->name('checklogin');
+Route::post('/login',[App\Http\Controllers\CustomAuth\LoginController::class,'checkLogin'])
+    ->middleware('throttle:10,1')
+    ->name('checklogin');
 
 Route::get('/dashboard',[App\Http\Controllers\CustomAuth\LoginController::class,'showdashboard'])->name('dashboard');
 Route::post('/logout',[App\Http\Controllers\CustomAuth\LoginController::class,'getlogout'])->name('logout');
@@ -126,8 +128,8 @@ Route::group(['middleware'=>['auth']],function(){
         Route::post('/change-password', [App\Http\Controllers\CustomAuth\LoginController::class,'storepwd'])->name('change.password');
         Route::post('/reset-password', [App\Http\Controllers\CustomAuth\LoginController::class,'resetpassword'])->name('resetpwd');
         Route::post('/saveuser_right', [App\Http\Controllers\CustomAuth\LoginController::class,'saveuser_right'])->name('saveuser_right');
-        Route::get('/switchstatus', [App\Http\Controllers\CustomAuth\LoginController::class,'switchstatus'])->name('switchstatus');
-        Route::get('/switchblock', [App\Http\Controllers\CustomAuth\LoginController::class,'switchblock'])->name('switchblock');
+        Route::post('/switchstatus', [App\Http\Controllers\CustomAuth\LoginController::class,'switchstatus'])->name('switchstatus');
+        Route::post('/switchblock', [App\Http\Controllers\CustomAuth\LoginController::class,'switchblock'])->name('switchblock');
     });
 });
 
@@ -139,13 +141,13 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/currencyedit', [App\Http\Controllers\CurrencyController::class,'currencyedit'])->name('currencyedit');
     Route::get('/currencylist', [App\Http\Controllers\CurrencyController::class,'currencylist'])->name('currencylist');
     Route::post('/updatecurrencyno', [App\Http\Controllers\CurrencyController::class,'updatecurrencyno'])->name('updatecurrencyno');
-    Route::get('/deletecurrency', [App\Http\Controllers\CurrencyController::class,'deletecurrency'])->name('deletecurrency');
-    Route::get('/restorecurrency', [App\Http\Controllers\CurrencyController::class,'restorecurrency'])->name('restorecurrency');
+    Route::post('/deletecurrency', [App\Http\Controllers\CurrencyController::class,'deletecurrency'])->name('deletecurrency');
+    Route::post('/restorecurrency', [App\Http\Controllers\CurrencyController::class,'restorecurrency'])->name('restorecurrency');
     Route::get('/checkcurrencyproduct', [App\Http\Controllers\CurrencyController::class,'checkcurrencyproduct'])->name('checkcurrencyproduct');
     Route::post('/savepexchangep', [App\Http\Controllers\CurrencyController::class,'savepexchangep'])->name('savepexchangep');
     Route::post('/saveexchangebutton', [App\Http\Controllers\CurrencyController::class,'saveexchangebutton'])->name('saveexchangebutton');
     Route::get('/update_currency_button', [App\Http\Controllers\CurrencyController::class,'update_currency_button'])->name('update_currency_button');
-    Route::get('/deletecurrencybutton', [App\Http\Controllers\CurrencyController::class,'deletecurrencybutton'])->name('deletecurrencybutton');
+    Route::post('/deletecurrencybutton', [App\Http\Controllers\CurrencyController::class,'deletecurrencybutton'])->name('deletecurrencybutton');
 
     Route::get('/getcurrencybutton', [App\Http\Controllers\CurrencyController::class,'getcurrencybutton'])->name('getcurrencybutton');
     Route::get('/productlist', [App\Http\Controllers\CurrencyController::class,'productlist'])->name('productlist');
@@ -190,17 +192,17 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/exchangelists', [App\Http\Controllers\ExchangeController::class,'exchangelists'])->name('exchangelists');
     Route::get('/exchangelistsnew', [App\Http\Controllers\ExchangeController::class,'exchangelistsnew'])->name('exchangelistsnew');
     Route::get('/exchangegoldreport', [App\Http\Controllers\ExchangeController::class,'exchangegoldreport'])->name('exchangegoldreport');
-    Route::get('/exchangegold/deletelistgroup', [App\Http\Controllers\ExchangeController::class,'exchangegolddeletelistgroup'])->name('exchangegold.deletelistgroup');
+    Route::post('/exchangegold/deletelistgroup', [App\Http\Controllers\ExchangeController::class,'exchangegolddeletelistgroup'])->name('exchangegold.deletelistgroup');
 
     Route::get('/exchangelists/report', [App\Http\Controllers\ExchangeController::class,'exchangelists'])->name('exchangelistsreport');
     Route::get('/exchangegoldreport/showpaymentdetail', [App\Http\Controllers\ExchangeController::class,'showgoldpaymentdetail'])->name('exchangegoldreport.showpaymentdetail');
-    Route::get('/deleteexchange', [App\Http\Controllers\ExchangeController::class,'deleteexchange'])->name('deleteexchange');
+    Route::post('/deleteexchange', [App\Http\Controllers\ExchangeController::class,'deleteexchange'])->name('deleteexchange');
     Route::get('/getexchangelist', [App\Http\Controllers\ExchangeController::class,'getexchangelist'])->name('getexchangelist');
     Route::get('/getexchangelistnew', [App\Http\Controllers\ExchangeController::class,'getexchangelistnew'])->name('getexchangelistnew');
     Route::get('/getexchangelistgold', [App\Http\Controllers\ExchangeController::class,'getexchangelistgold'])->name('getexchangelistgold');
     Route::get('/getcustomerexchangelist', [App\Http\Controllers\ExchangeController::class,'getcustomerexchangelist'])->name('getcustomerexchangelist');
-    Route::get('/customerexchangecapture/delete', [App\Http\Controllers\ExchangeController::class,'delcustomerexchangecapture'])->name('customerexchangecapture.delete');
-    Route::get('/customerexchangecapture/deleteall', [App\Http\Controllers\ExchangeController::class,'delallcustomerexchangecapture'])->name('customerexchangecapture.deleteall');
+    Route::post('/customerexchangecapture/delete', [App\Http\Controllers\ExchangeController::class,'delcustomerexchangecapture'])->name('customerexchangecapture.delete');
+    Route::post('/customerexchangecapture/deleteall', [App\Http\Controllers\ExchangeController::class,'delallcustomerexchangecapture'])->name('customerexchangecapture.deleteall');
 
 
     Route::get('/customerexchangelist', [App\Http\Controllers\ExchangeController::class,'customerexchangelist'])->name('customerexchangelist');
@@ -224,8 +226,8 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/invoice/detail', [App\Http\Controllers\InvoiceController::class,'invoicedetail'])->name('invoice.invoicedetail');
     Route::get('/invoice/showpaymentmodal', [App\Http\Controllers\InvoiceController::class,'showpaymentmodal'])->name('invoice.showpaymentmodal');
     Route::post('/invoice/payment1', [App\Http\Controllers\InvoiceController::class,'payment1'])->name('invoice.payment1');
-    Route::get('/invoice/deletepayment', [App\Http\Controllers\InvoiceController::class,'deletepayment'])->name('invoice.deletepayment');
-    Route::get('/invoice/delete', [App\Http\Controllers\InvoiceController::class,'delete'])->name('invoice.delete');
+    Route::post('/invoice/deletepayment', [App\Http\Controllers\InvoiceController::class,'deletepayment'])->name('invoice.deletepayment');
+    Route::post('/invoice/delete', [App\Http\Controllers\InvoiceController::class,'delete'])->name('invoice.delete');
     Route::get('/invoice/getinvpaymentbypaymentcode', [App\Http\Controllers\InvoiceController::class,'getinvpaymentbypaymentcode'])->name('invoice.getinvpaymentbypaymentcode');
     Route::get('/invoice/print', [App\Http\Controllers\InvoiceController::class,'invoiceprint'])->name('invoiceprint');
 });
@@ -242,12 +244,12 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/customer/cusname/autocomplete', [App\Http\Controllers\CustomerController::class,'cusnameautocomplete'])->name('cusname.autocomplete');
     Route::post('/customer/savepartneraccount', [App\Http\Controllers\CustomerController::class,'savepartneraccount'])->name('customer.savepartneraccount');
     Route::post('/customer/savecloselist', [App\Http\Controllers\CustomerController::class,'savecloselist'])->name('customer.savecloselist');
-    Route::get('/customer/deletecloselist', [App\Http\Controllers\CustomerController::class,'deletecloselist'])->name('customer.deletecloselist');
+    Route::post('/customer/deletecloselist', [App\Http\Controllers\CustomerController::class,'deletecloselist'])->name('customer.deletecloselist');
     Route::get('/customer/searchbytype', [App\Http\Controllers\CustomerController::class,'searchbytype'])->name('customer.searchbytype');
     Route::get('/customer/print', [App\Http\Controllers\CustomerController::class,'print'])->name('customer.print');
     Route::post('/customer/updateno', [App\Http\Controllers\CustomerController::class,'updateno'])->name('customer.updateno');
-    Route::get('/customer/delete', [App\Http\Controllers\CustomerController::class,'delete'])->name('customer.delete');
-    Route::get('/customer/deleteaccount', [App\Http\Controllers\CustomerController::class,'deleteaccount'])->name('customer.deleteaccount');
+    Route::post('/customer/delete', [App\Http\Controllers\CustomerController::class,'delete'])->name('customer.delete');
+    Route::post('/customer/deleteaccount', [App\Http\Controllers\CustomerController::class,'deleteaccount'])->name('customer.deleteaccount');
 
     Route::get('/customer/getmaxcustomerno', [App\Http\Controllers\CustomerController::class,'getmaxcustomerno'])->name('customer.getmaxcustomerno');
     Route::get('/customer/getcustomeraccount', [App\Http\Controllers\CustomerController::class,'getcustomeraccount'])->name('customer.getcustomeraccount');
@@ -260,7 +262,7 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/customer/readagenttype', [App\Http\Controllers\CustomerController::class,'readagenttype'])->name('readagenttype');
     Route::post('/customer/deleteagenttype', [App\Http\Controllers\CustomerController::class,'deleteagenttype'])->name('deleteagenttype');
 
-    Route::get('/customer/deletemainitem', [App\Http\Controllers\CustomerController::class,'deletemainitem'])->name('deletemainitem');
+    Route::post('/customer/deletemainitem', [App\Http\Controllers\CustomerController::class,'deletemainitem'])->name('deletemainitem');
 
 });
 Route::group(['middleware'=>['auth']],function(){
@@ -274,8 +276,8 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/address/getcommune', [App\Http\Controllers\ChildController::class,'getcommune'])->name('address.getcommune');
     Route::get('/address/getvillage', [App\Http\Controllers\ChildController::class,'getvillage'])->name('address.getvillage');
     Route::get('/address/search', [App\Http\Controllers\ChildController::class,'searchaddress'])->name('address.search');
-    Route::get('/address/delete', [App\Http\Controllers\ChildController::class,'deleteaddress'])->name('address.delete');
-    Route::get('/child/delete', [App\Http\Controllers\ChildController::class,'delete'])->name('child.delete');
+    Route::post('/address/delete', [App\Http\Controllers\ChildController::class,'deleteaddress'])->name('address.delete');
+    Route::post('/child/delete', [App\Http\Controllers\ChildController::class,'delete'])->name('child.delete');
 
     Route::post('/child/store', [App\Http\Controllers\ChildController::class,'store'])->name('child.store');
     Route::get('/child/search', [App\Http\Controllers\ChildController::class,'searchchild'])->name('child.search');
@@ -297,7 +299,7 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/banktransfer/doreportsummary', [App\Http\Controllers\BankTransferController::class,'doreportsummary'])->name('banktransfer.doreportsummary');
     Route::get('/banktransfer/search', [App\Http\Controllers\BankTransferController::class,'search'])->name('banktransfer.search');
     Route::post('/banktransfer/savetransfer', [App\Http\Controllers\BankTransferController::class,'savetransfer'])->name('banktransfer.savetransfer');
-    Route::get('/banktransfer/delete', [App\Http\Controllers\BankTransferController::class,'delete'])->name('banktransfer.delete');
+    Route::post('/banktransfer/delete', [App\Http\Controllers\BankTransferController::class,'delete'])->name('banktransfer.delete');
 });
 Route::group(['middleware'=>['auth']],function(){
     Route::get('/stock', [App\Http\Controllers\StockController::class,'index'])->name('stock.index');
@@ -308,7 +310,7 @@ Route::group(['middleware'=>['auth']],function(){
 
     Route::get('/showstockreport', [App\Http\Controllers\StockController::class,'showstockreport'])->name('stock.showstockreport');
     Route::get('/showstockreport1', [App\Http\Controllers\StockController::class,'showstockreport1'])->name('stock.showstockreport1');
-    Route::get('/stock/delete', [App\Http\Controllers\StockController::class,'deletestock'])->name('stock.delete');
+    Route::post('/stock/delete', [App\Http\Controllers\StockController::class,'deletestock'])->name('stock.delete');
 
     Route::post('/stock/store', [App\Http\Controllers\StockController::class,'store'])->name('stock.store');
     Route::get('/showstock', [App\Http\Controllers\StockController::class,'showstock'])->name('stock.showstock');
@@ -340,7 +342,7 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/moneytransfer/gettranname', [App\Http\Controllers\MoneyTransferController::class,'gettranname'])->name('moneytransfer.gettranname');
     Route::post('/moneytransfer/storerateset', [App\Http\Controllers\MoneyTransferController::class,'storerateset'])->name('moneytransfer.storerateset');
     Route::post('/moneytransfer/storetranname', [App\Http\Controllers\MoneyTransferController::class,'storetranname'])->name('moneytransfer.storetranname');
-    Route::get('/moneytransfer/deletetranname', [App\Http\Controllers\MoneyTransferController::class,'deletetranname'])->name('moneytransfer.deletetranname');
+    Route::post('/moneytransfer/deletetranname', [App\Http\Controllers\MoneyTransferController::class,'deletetranname'])->name('moneytransfer.deletetranname');
     Route::post('/moneytransfer/showratelist/update', [App\Http\Controllers\MoneyTransferController::class,'updateratelist'])->name('moneytransfer.updateratelist');
     Route::get('/moneytransfer/showratelist', [App\Http\Controllers\MoneyTransferController::class,'showratelist'])->name('moneytransfer.showratelist');
     Route::get('/moneytransfer/delsetrate', [App\Http\Controllers\MoneyTransferController::class,'delsetrate'])->name('moneytransfer.delsetrate');
@@ -369,7 +371,7 @@ Route::group(['middleware'=>['auth']],function(){
     Route::post('/banktransfer/store', [App\Http\Controllers\MoneyTransferController::class,'bankstore'])->name('banktransfer.store');
     Route::post('/customertransfer/store', [App\Http\Controllers\MoneyTransferController::class,'customerstore'])->name('customertransfer.store');
     Route::get('/customertransfer/edit', [App\Http\Controllers\MoneyTransferController::class,'customeredit'])->name('customertransfer.edit');
-    Route::get('/customertransfer/delete', [App\Http\Controllers\MoneyTransferController::class,'customerdelete'])->name('customertransfer.delete');
+    Route::post('/customertransfer/delete', [App\Http\Controllers\MoneyTransferController::class,'customerdelete'])->name('customertransfer.delete');
 
     Route::post('/wingtransfer/store', [App\Http\Controllers\MoneyTransferController::class,'wingstore'])->name('wingtransfer.store');
     Route::get('/wingtransfer/gettransactionname', [App\Http\Controllers\MoneyTransferController::class,'gettransactionname'])->name('wingtransfer.gettransactionname');
@@ -390,7 +392,7 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/moneytransfer/phonenumberlocalstorage', [App\Http\Controllers\MoneyTransferController::class,'phonenumber_localstorage'])->name('phonenumberlocalstorage');
     Route::get('/moneytransfer/phonenumberlocalstoragethai', [App\Http\Controllers\MoneyTransferController::class,'phonenumber_localstorage_thai'])->name('phonenumberlocalstoragethai');
 
-    Route::get('/moneytransfer/delete', [App\Http\Controllers\MoneyTransferController::class,'delete'])->name('moneytransfer.delete');
+    Route::post('/moneytransfer/delete', [App\Http\Controllers\MoneyTransferController::class,'delete'])->name('moneytransfer.delete');
     Route::get('/moneytransfer/search', [App\Http\Controllers\MoneyTransferController::class,'search'])->name('moneytransfer.search');
     Route::get('/moneytransfer/search_update_delete_record', [App\Http\Controllers\MoneyTransferController::class,'search_update_delete_record'])->name('moneytransfer.search_update_delete_record');
 
@@ -412,17 +414,17 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/moneytransfer/getmulticashdraw', [App\Http\Controllers\MoneyTransferController::class,'getmulticashdraw'])->name('moneytransfer.getmulticashdraw');
 
     Route::get('/moneytransfer/cashdrawcheckother', [App\Http\Controllers\MoneyTransferController::class,'cashdrawcheckother'])->name('cashdraw.checkother');
-    Route::get('/moneytransfer/cashdrawdelete', [App\Http\Controllers\MoneyTransferController::class,'cashdrawdelete'])->name('cashdraw.delete');
-    Route::get('/moneytransfer/cashdrawdelete1', [App\Http\Controllers\MoneyTransferController::class,'cashdrawdelete1'])->name('cashdraw.delete1');
+    Route::post('/moneytransfer/cashdrawdelete', [App\Http\Controllers\MoneyTransferController::class,'cashdrawdelete'])->name('cashdraw.delete');
+    Route::post('/moneytransfer/cashdrawdelete1', [App\Http\Controllers\MoneyTransferController::class,'cashdrawdelete1'])->name('cashdraw.delete1');
     Route::get('/moneytransfer/getwingrate', [App\Http\Controllers\MoneyTransferController::class,'getwingrate'])->name('moneytransfer.getwingrate');
     Route::get('/moneytransfer/getwingratestorage', [App\Http\Controllers\MoneyTransferController::class,'getwingratestorage'])->name('moneytransfer.getwingratestorage');
 
 
-    Route::get('/moneytransfer/cashdrawdeletebankcontinue', [App\Http\Controllers\MoneyTransferController::class,'cashdrawdeletebankcontinue'])->name('cashdraw.deletebankcontinue');
+    Route::post('/moneytransfer/cashdrawdeletebankcontinue', [App\Http\Controllers\MoneyTransferController::class,'cashdrawdeletebankcontinue'])->name('cashdraw.deletebankcontinue');
     Route::post('/moneytransfer/cashdrawselectdelaction', [App\Http\Controllers\MoneyTransferController::class,'cashdrawselectdelaction'])->name('cashdrawselect.delaction');
     Route::get('/moneytransfer/cashdraw/clearclick', [App\Http\Controllers\MoneyTransferController::class,'cashdrawclearclick'])->name('cashdraw.clearclick');
-    Route::get('/moneytransfer/deleteuseraction', [App\Http\Controllers\MoneyTransferController::class,'deleteuseraction'])->name('deleteuseraction');
-    Route::get('/moneytransfer/deleteuseractionbytransferid', [App\Http\Controllers\MoneyTransferController::class,'deleteuseractionbytransferid'])->name('deleteuseractionbytransferid');
+    Route::post('/moneytransfer/deleteuseraction', [App\Http\Controllers\MoneyTransferController::class,'deleteuseraction'])->name('deleteuseraction');
+    Route::post('/moneytransfer/deleteuseractionbytransferid', [App\Http\Controllers\MoneyTransferController::class,'deleteuseractionbytransferid'])->name('deleteuseractionbytransferid');
     Route::post('/moneytransfer/saveuseraction', [App\Http\Controllers\MoneyTransferController::class,'saveuseraction'])->name('saveuseraction');
     Route::get('/moneytransfer/cashdrawreport', [App\Http\Controllers\MoneyTransferController::class,'cashdrawreport'])->name('moneytransfer.cashdrawreport');
     Route::get('/moneytransfer/cashdrawreport/report', [App\Http\Controllers\MoneyTransferController::class,'cashdrawreport'])->name('moneytransfer.cashdrawreportreport');
@@ -451,7 +453,7 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/thaicashdraw/cashdraw2', [App\Http\Controllers\ThaiController::class,'cashdraw2'])->name('thaicashdraw.cashdraw2');
 
     Route::get('/thaicashdraw/showgroupid', [App\Http\Controllers\ThaiController::class,'showgroupid'])->name('thaicashdraw.showgroupid');
-    Route::get('/thaicashdraw/deletegroupid', [App\Http\Controllers\ThaiController::class,'deletegroupid'])->name('thaicashdraw.deletegroupid');
+    Route::post('/thaicashdraw/deletegroupid', [App\Http\Controllers\ThaiController::class,'deletegroupid'])->name('thaicashdraw.deletegroupid');
     Route::get('/thaicashdraw/updatestep', [App\Http\Controllers\ThaiController::class,'updatestep'])->name('thaicashdraw.updatestep');
     Route::get('/thaicashdraw/updatemissioncomplete', [App\Http\Controllers\ThaiController::class,'mission_ready'])->name('thaicashdraw.mission_ready');
     Route::get('/thaicashdraw/getpartnerbalancebycur', [App\Http\Controllers\ThaiController::class,'getpartnerbalancebycur'])->name('thaicashdraw.getpartnerbalancebycur');
@@ -497,8 +499,8 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/thaicashdraw/clearclick', [App\Http\Controllers\ThaiController::class,'cashdrawclearclick'])->name('thaicashdraw.clearclick');
     Route::get('/thaicashdraw1/clearclick1', [App\Http\Controllers\ThaiController::class,'cashdrawclearclick1'])->name('thaicashdraw1.clearclick1');
 
-    Route::get('/thaicashdraw/deleteuseraction', [App\Http\Controllers\ThaiController::class,'deleteuseraction'])->name('thaideleteuseraction');
-    Route::get('/thaicashdraw1/deleteuseraction1', [App\Http\Controllers\ThaiController::class,'deleteuseraction1'])->name('thaideleteuseraction1');
+    Route::post('/thaicashdraw/deleteuseraction', [App\Http\Controllers\ThaiController::class,'deleteuseraction'])->name('thaideleteuseraction');
+    Route::post('/thaicashdraw1/deleteuseraction1', [App\Http\Controllers\ThaiController::class,'deleteuseraction1'])->name('thaideleteuseraction1');
 
     Route::get('/thaicashdraw/prints', [App\Http\Controllers\ThaiController::class,'cashdrawprint'])->name('thaicashdraw.prints');
 
@@ -524,17 +526,17 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/thaiaccount/getaccountlist', [App\Http\Controllers\ThaiController::class,'getaccountlist'])->name('thaiaccount.getaccountlist');
     Route::get('/thaiaccount/getaccountlistreport', [App\Http\Controllers\ThaiController::class,'getaccountlistreport'])->name('thaiaccount.getaccountlistreport');
 
-    Route::get('/thaiaccount/deleteaccount', [App\Http\Controllers\ThaiController::class,'deleteaccount'])->name('thaiaccount.deleteaccount');
-    Route::get('/thaicustomer/deletecustomer', [App\Http\Controllers\ThaiController::class,'deletecustomer'])->name('thaicustomer.deletecustomer');
+    Route::post('/thaiaccount/deleteaccount', [App\Http\Controllers\ThaiController::class,'deleteaccount'])->name('thaiaccount.deleteaccount');
+    Route::post('/thaicustomer/deletecustomer', [App\Http\Controllers\ThaiController::class,'deletecustomer'])->name('thaicustomer.deletecustomer');
 
     Route::get('/thaiaccount/getaccountbalance', [App\Http\Controllers\ThaiController::class,'getaccountbalance'])->name('thaiaccount.getaccountbalance');
     Route::post('/thaiaccount/closelist', [App\Http\Controllers\ThaiController::class,'thaiaccountcloselist'])->name('thaiaccount.closelist');
     Route::get('/thaiaccount/getaccountcloselist', [App\Http\Controllers\ThaiController::class,'getaccountcloselist'])->name('thaiaccount.getaccountcloselist');
-    Route::get('/thaiaccount/deletecloselistaccount', [App\Http\Controllers\ThaiController::class,'deletecloselistaccount'])->name('thaiaccount.deletecloselist');
+    Route::post('/thaiaccount/deletecloselistaccount', [App\Http\Controllers\ThaiController::class,'deletecloselistaccount'])->name('thaiaccount.deletecloselist');
     Route::post('/thaiaccount/savesms', [App\Http\Controllers\ThaiController::class,'savesms'])->name('thaiaccount.savesms');
     Route::get('/thaisms/getaccountbybank', [App\Http\Controllers\ThaiController::class,'getaccountbybank'])->name('thaisms.getacclistbybank');
     Route::get('/thaisms/getsmsuserinsert', [App\Http\Controllers\ThaiController::class,'getsmsuserinsert'])->name('thaisms.getsmsuserinsert');
-    Route::get('/thaisms/smsdelete', [App\Http\Controllers\ThaiController::class,'smsdelete'])->name('thaisms.smsdelete');
+    Route::post('/thaisms/smsdelete', [App\Http\Controllers\ThaiController::class,'smsdelete'])->name('thaisms.smsdelete');
     Route::get('/thaisms/matchsmsidtotransfer', [App\Http\Controllers\ThaiController::class,'matchsmsidtotransfer'])->name('thaisms.matchsmsidtotransfer');
     Route::get('/thaisms/delmatchsmsidtotransfer', [App\Http\Controllers\ThaiController::class,'delmatchsmsidtotransfer'])->name('thaisms.delmatchsmsidtotransfer');
 
@@ -569,9 +571,9 @@ Route::group(['middleware'=>['auth']],function(){
     Route::post('/partnerlist/storecloselist', [App\Http\Controllers\PartnerListController::class,'storecloselist'])->name('partnerlist.storecloselist');
     Route::get('/partnerlist/delkatkong', [App\Http\Controllers\PartnerListController::class,'delkatkong'])->name('exchangelist.delkatkong');
     Route::get('/exchangelist/show', [App\Http\Controllers\PartnerListController::class,'exchangelistshow'])->name('exchangelist.show');
-    Route::get('/partnerlist/delete', [App\Http\Controllers\PartnerListController::class,'delete'])->name('exchangelist.delete');
+    Route::post('/partnerlist/delete', [App\Http\Controllers\PartnerListController::class,'delete'])->name('exchangelist.delete');
     Route::get('/partnerlist/showcloselist', [App\Http\Controllers\PartnerListController::class,'showcloselist'])->name('partnerlist.showcloselist');
-    Route::get('/partnerlist/closelist/delete', [App\Http\Controllers\PartnerListController::class,'closelistdelete'])->name('closelist.delete');
+    Route::post('/partnerlist/closelist/delete', [App\Http\Controllers\PartnerListController::class,'closelistdelete'])->name('closelist.delete');
     Route::get('/partnerlist/getpartnerbytype', [App\Http\Controllers\PartnerListController::class,'getpartnerbytype'])->name('getpartnerbytype');
     Route::get('/partnerlist/print', [App\Http\Controllers\PartnerListController::class,'partnerlistprint'])->name('partnerlist.print');
 });
@@ -592,7 +594,7 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/usercapital/showrefgroupid', [App\Http\Controllers\UserCapitalController::class,'showrefgroupid'])->name('usercapital.showrefgroupid');
     Route::get('/usercapital/showsummarydetail', [App\Http\Controllers\UserCapitalController::class,'showsummarydetail'])->name('usercapital.showsummarydetail');
 
-    Route::get('/usercapital/deletetransactiongroup', [App\Http\Controllers\UserCapitalController::class,'deletetransactiongroup'])->name('usercapital.deletetransactiongroup');
+    Route::post('/usercapital/deletetransactiongroup', [App\Http\Controllers\UserCapitalController::class,'deletetransactiongroup'])->name('usercapital.deletetransactiongroup');
     Route::get('/usercapital/updatetransactiongroup', [App\Http\Controllers\UserCapitalController::class,'updatetransactiongroup'])->name('usercapital.updatetransactiongroup');
     Route::get('/usercapital/updateusercapital', [App\Http\Controllers\UserCapitalController::class,'updateusercapital'])->name('usercapital.updateusercapital');
 
@@ -616,7 +618,7 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/usercapital/gettrueenddingbalanceall', [App\Http\Controllers\UserCapitalController::class,'gettrueenddingbalanceall'])->name('usercapital.gettrueenddingbalanceall');
 
 
-    Route::get('/usercapital/delete', [App\Http\Controllers\UserCapitalController::class,'delete'])->name('usercapital.delete');
+    Route::post('/usercapital/delete', [App\Http\Controllers\UserCapitalController::class,'delete'])->name('usercapital.delete');
     Route::get('/usercapital/edit', [App\Http\Controllers\UserCapitalController::class,'edit'])->name('usercapital.edit');
 
     Route::get('/usercapital/showcloselist', [App\Http\Controllers\UserCapitalController::class,'showcloselist'])->name('usercapital.showcloselist');
@@ -645,7 +647,7 @@ Route::group(['middleware'=>['auth']],function(){
 
     Route::get('/usercapital/showuseroffer', [App\Http\Controllers\UserCapitalController::class,'showuseroffer'])->name('usercapital.showuseroffer');
     Route::post('/usercapital/savemoneyofferaccept', [App\Http\Controllers\UserCapitalController::class,'savemoneyofferaccept'])->name('usercapital.savemoneyofferaccept');
-    Route::get('/useroffer/delete', [App\Http\Controllers\UserCapitalController::class,'userofferdelete'])->name('useroffer.delete');
+    Route::post('/useroffer/delete', [App\Http\Controllers\UserCapitalController::class,'userofferdelete'])->name('useroffer.delete');
     Route::get('/useroffer/reject', [App\Http\Controllers\UserCapitalController::class,'userofferreject'])->name('useroffer.reject');
     Route::get('/useroffer/restore', [App\Http\Controllers\UserCapitalController::class,'userofferrestore'])->name('useroffer.restore');
     Route::get('/moneyoffer/print', [App\Http\Controllers\UserCapitalController::class,'moneyofferprint'])->name('moneyoffer.print');
@@ -700,18 +702,18 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/getexpansetypebygroup', [App\Http\Controllers\ExpanseController::class,'getexpansetypebygroup'])->name('expanseincome.getexpansetypebygroup');
     Route::get('/getexpanselist', [App\Http\Controllers\ExpanseController::class,'getexpanselist'])->name('expanseincome.getexpanselist');
     Route::get('/expanseedit', [App\Http\Controllers\ExpanseController::class,'edit'])->name('expanseincome.edit');
-    Route::get('/expansedelete', [App\Http\Controllers\ExpanseController::class,'delete'])->name('expanseincome.delete');
-    Route::get('/expansedeletetype', [App\Http\Controllers\ExpanseController::class,'deletetype'])->name('expanseincome.deletetype');
+    Route::post('/expansedelete', [App\Http\Controllers\ExpanseController::class,'delete'])->name('expanseincome.delete');
+    Route::post('/expansedeletetype', [App\Http\Controllers\ExpanseController::class,'deletetype'])->name('expanseincome.deletetype');
      Route::get('/expansereport', [App\Http\Controllers\ExpanseController::class,'expansereport'])->name('expanseincome.report');
 });
 Route::group(['middleware'=>['auth']],function(){
     Route::get('/landregister', [App\Http\Controllers\LandController::class,'index'])->name('land.index');
     Route::get('/getpropertygroup', [App\Http\Controllers\LandController::class,'getpropertygroup'])->name('getpropertygroup');
-    Route::get('/propertygroup/delete', [App\Http\Controllers\LandController::class,'propertygroupdelete'])->name('propertygroup.delete');
+    Route::post('/propertygroup/delete', [App\Http\Controllers\LandController::class,'propertygroupdelete'])->name('propertygroup.delete');
     Route::post('/savelandgroup', [App\Http\Controllers\LandController::class,'savelandgroup'])->name('savelandgroup');
     Route::post('/property/saveland', [App\Http\Controllers\LandController::class,'saveland'])->name('property.saveland');
     Route::get('/getpropertylist', [App\Http\Controllers\LandController::class,'getpropertylist'])->name('getpropertylist');
-    Route::get('/property/delete', [App\Http\Controllers\LandController::class,'propertydelete'])->name('property.delete');
+    Route::post('/property/delete', [App\Http\Controllers\LandController::class,'propertydelete'])->name('property.delete');
     Route::get('/propertyname/autocomplete', [App\Http\Controllers\LandController::class,'propertynameautocomplete'])->name('propertyname.autocomplete');
     Route::get('/land/deletepropertysold', [App\Http\Controllers\LandController::class,'deletepropertysold'])->name('deletepropertysold');
     Route::get('/land/getpropertysoldlink', [App\Http\Controllers\LandController::class,'getpropertysoldlink'])->name('getpropertysoldlink');
@@ -736,7 +738,7 @@ Route::group(['middleware'=>['auth']],function(){
     Route::post('/realestate/savedocontract', [App\Http\Controllers\RealEstateController::class,'savedocontract'])->name('realestate.savedocontract');
 
     Route::get('/realestate/edit', [App\Http\Controllers\RealEstateController::class,'edit'])->name('realestate.edit');
-    Route::get('/realestate/delete', [App\Http\Controllers\RealEstateController::class,'delete'])->name('realestate.delete');
+    Route::post('/realestate/delete', [App\Http\Controllers\RealEstateController::class,'delete'])->name('realestate.delete');
     Route::get('/realestate/getpropertybygroup', [App\Http\Controllers\RealEstateController::class,'getpropertybygroup'])->name('realestate.getpropertybygroup');
     Route::get('/realestate/saleprint', [App\Http\Controllers\RealEstateController::class,'print'])->name('realestate.saleprint');
     Route::get('/realestate/getsalelist', [App\Http\Controllers\RealEstateController::class,'getsalelist'])->name('realestate.getsalelist');
@@ -765,7 +767,7 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/realestate/showdeposit', [App\Http\Controllers\RealEstateController::class,'showdeposit'])->name('realestate.showdeposit');
     Route::get('/realestate/showinvbycustomer', [App\Http\Controllers\RealEstateController::class,'showinvbycustomer'])->name('realestate.showinvbycustomer');
     Route::get('/realestate/searchdeposit', [App\Http\Controllers\RealEstateController::class,'searchdeposit'])->name('realestate.searchdeposit');
-    Route::get('/realestate/deletepayment', [App\Http\Controllers\RealEstateController::class,'deletepayment'])->name('realestate.deletepayment');
+    Route::post('/realestate/deletepayment', [App\Http\Controllers\RealEstateController::class,'deletepayment'])->name('realestate.deletepayment');
     Route::get('/realestate/showromloslist', [App\Http\Controllers\RealEstateController::class,'showromloslist'])->name('realestate.showromloslist');
     Route::get('/realestate/closelist', [App\Http\Controllers\RealEstateController::class,'closelist'])->name('realestate.closelist');
     Route::get('/realestate/updateinfo', [App\Http\Controllers\RealEstateController::class,'updateinfo'])->name('realestate.updateinfo');
@@ -785,7 +787,7 @@ Route::group(['middleware'=>['auth']],function(){
     Route::post('/realestate/savenewpayromlos', [App\Http\Controllers\RealEstateController::class,'savenewpayromlos'])->name('realestate.savenewpayromlos');
     Route::post('/realestate/updateterm', [App\Http\Controllers\RealEstateController::class,'updateterm'])->name('realestate.updateterm');
     Route::post('/realestate/updatecommissionlink', [App\Http\Controllers\RealEstateController::class,'updatecommissionlink'])->name('realestate.updatecommissionlink');
-    Route::get('/realestate/deletenewpayromlos', [App\Http\Controllers\RealEstateController::class,'deletenewpayromlos'])->name('realestate.deletenewpayromlos');
+    Route::post('/realestate/deletenewpayromlos', [App\Http\Controllers\RealEstateController::class,'deletenewpayromlos'])->name('realestate.deletenewpayromlos');
 
     Route::get('/realestate/buypaymentcompleted', [App\Http\Controllers\RealEstateController::class,'buypaymentcompleted'])->name('realestate.buypaymentcompleted');
 
@@ -794,9 +796,9 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/realestate/searchromlos', [App\Http\Controllers\RealEstateController::class,'searchromlos'])->name('realestate.searchromlos');
     Route::get('/realestate/depositprint', [App\Http\Controllers\RealEstateController::class,'depositprint'])->name('realestate.depositprint');
     Route::get('/realestate/depositprint1', [App\Http\Controllers\RealEstateController::class,'depositprint1'])->name('realestate.depositprint1');
-    Route::get('/realestate/deletepaidcommission', [App\Http\Controllers\RealEstateController::class,'deletepaidcommission'])->name('realestate.deletepaidcommission');
+    Route::post('/realestate/deletepaidcommission', [App\Http\Controllers\RealEstateController::class,'deletepaidcommission'])->name('realestate.deletepaidcommission');
     Route::get('/realestate/removecommission', [App\Http\Controllers\RealEstateController::class,'removecommission'])->name('realestate.removecommission');
-    Route::get('/realestate/deletepaidcommissionall', [App\Http\Controllers\RealEstateController::class,'deletepaidcommissionall'])->name('realestate.deletepaidcommissionall');
+    Route::post('/realestate/deletepaidcommissionall', [App\Http\Controllers\RealEstateController::class,'deletepaidcommissionall'])->name('realestate.deletepaidcommissionall');
 
     Route::get('/realestate/getcommissionlist', [App\Http\Controllers\RealEstateController::class,'getcommissionlist'])->name('realestate.getcommissionlist');
     Route::get('/realestate/getcommissionlist/print', [App\Http\Controllers\RealEstateController::class,'getcommissionlist'])->name('realestate.getcommissionlistprint');
@@ -810,7 +812,7 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('/realestate/findcontract', [App\Http\Controllers\RealEstateController::class,'findcontract'])->name('realestate.findcontract');
     Route::get('/realestate/incomeexpanse/print', [App\Http\Controllers\RealEstateController::class,'print_income_expanse_report'])->name('realestate.printincomeexpansereport');
     Route::get('/realestate/editcontract', [App\Http\Controllers\RealEstateController::class,'editcontract'])->name('realestate.editcontract');
-    Route::get('/realestate/deletecontract', [App\Http\Controllers\RealEstateController::class,'deletecontract'])->name('realestate.deletecontract');
+    Route::post('/realestate/deletecontract', [App\Http\Controllers\RealEstateController::class,'deletecontract'])->name('realestate.deletecontract');
     Route::post('/realestate/updatetempcommission', [App\Http\Controllers\RealEstateController::class,'updatetempcommission'])->name('realestate.updatetempcommission');
 
 });

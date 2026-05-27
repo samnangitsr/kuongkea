@@ -555,7 +555,7 @@
         {
             var url="{{ route('address.getdistrict') }}";
             $(el).empty();
-            $.get(url,{province_id:province_id},function(data){
+            $.post(url,{province_id:province_id},function(data){
                 $(el).append($("<option/>",{
                             value:'',
                             text:''
@@ -592,7 +592,7 @@
             var url="{{ route('address.getcommune') }}";
             $(el).empty();
 
-            $.get(url,{district_id:district_id},function(data){
+            $.post(url,{district_id:district_id},function(data){
                 $(el).append($("<option/>",{
                             value:'',
                             text:''
@@ -630,7 +630,7 @@
             var url="{{ route('address.getvillage') }}";
             $(el).empty();
 
-            $.get(url,{commune_id:commune_id},function(data){
+            $.post(url,{commune_id:commune_id},function(data){
                 console.log(data)
 
                 $(el).append($("<option/>",{
@@ -810,7 +810,7 @@
             localStorage.removeItem("idsalers");
             localStorage.removeItem("doats");
             var url="{{ route('realestate.buyersalerlocalstorage') }}";
-            $.get(url,{},function(data){
+            $.post(url,{},function(data){
             console.log(data);
             var buyers;
             var salers;
