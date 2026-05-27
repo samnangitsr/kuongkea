@@ -1,53 +1,111 @@
-# មេរៀនប្រើប្រាស់ប្រព័ន្គ — Student Profile Management System
-# (Training Manual)
+# មេរៀនប្រើប្រាស់ប្រព័ន្ធ — kuongkea (ឡៅ ពួយឃាង ០៥)
+# Training Manual — Money-Exchange ERP
 
-> **ជំពូកទី ១ — ទិដ្ឋភាពទូទៅ**
+> **ជំពូកទី ១ — ទិដ្ឋភាពទូទៅ (Overview)**
 
 ---
 
 ## ១.១ អ្វីជា Project នេះ?
 
-**Student Profile Management System** គឺជា Web Application ប្រើប្រាស់ Laravel Framework សម្រាប់គ្រប់គ្រងព័ត៌មានសិស្សពេញលេញ ចាប់ពីការចុះឈ្មោះ (Enrollment) រហូតដល់ការបោះពុម្ពកាត (Student Card) វិញ្ញាបនបត្រ (Certificate) និងសញ្ញាបត្រ (Diploma)។ ប្រព័ន្ធនេះគាំទ្រពហុសាខា (Multi-Branch) និងមានការគ្រប់គ្រសិទ្ធិ (Role-Based Access Control)។
+**kuongkea** (ឡៅ ពួយឃាង ០៥) គឺជា Web Application សម្រាប់ដំណើរការអាជីវកម្មប្តូរប្រាក់ (money-changer)
+ដែលគ្រប់គ្រងជាមួយ Laravel។ ប្រព័ន្ធនេះរួមបញ្ចូលមុខងារសំខាន់ៗដូចជា:
+
+- **ប្តូររូបិយប័ណ្ណ (Currency Exchange)** — ទិញ-លក់រូបិយប័ណ្ណ ច្រើនប្រភេទ និងរក្សាស្តុក
+- **ផ្ទេរប្រាក់ (Money Transfer)** — ផ្ទេរប្រាក់ដៃគូ ផ្ទេរតាមធនាគារ ផ្ទេរតាមវីង បើកវេរក្នុងស្រុក និងវេរលុយថៃ
+- **ដើមទុនបុគ្គលិក (User Capital)** — តាមដានដើមទុនរបស់បុគ្គលិកម្នាក់ៗ និងប្រាក់ចំណេញ
+- **បញ្ជីដៃគូ (Partner Ledger)** — សៀវភៅបញ្ជីដៃគូ និង"កាត់កង" (netting)
+- **អចលនទ្រព្យ (Real Estate)** — ចុះឈ្មោះ-លក់-បង់រំលស់ដី និងផ្ទះ
+- **ការទទួលស្គាល់មុខ (Face Recognition)** — រកអតិថិជនចាស់ដោយស្វ័យប្រវត្តិ
+- **Telegram & Facebook Messenger** — ផ្ញើសារកិច្ចការ និង webhook
+- **Multi-Company (រហូតដល់ ១០ ក្រុមហ៊ុន)** — អ្នកប្រើប្រាស់ម្នាក់អាចចូលប្រើបានច្រើនក្រុមហ៊ុន
 
 ## ១.២ បច្ចេកវិទ្យាដែលប្រើ (Tech Stack)
 
 | ផ្នែក | បច្ចេកវិទ្យា |
 |---|---|
-| Backend Framework | **Laravel 12** (PHP 8.2+) |
-| Frontend CSS | **TailwindCSS 3** |
-| Frontend JS | **AlpineJS**, **Vue 3** |
-| Build Tool | **Vite** |
-| Database | **SQLite** (default) ឬ **MySQL** |
-| DataTables | **Yajra DataTables** |
-| Notifications | **PHP-Flasher**, **SweetAlert2** |
-| Date Picker | **Flatpickr** |
-| Select Box | **Tom Select** |
-| Auth | **Laravel Breeze** |
+| Backend Framework | **Laravel 13** (PHP **8.3**) |
+| Authentication | Laravel UI (`laravel/ui`) + `CustomAuth\LoginController` |
+| Realtime | **Laravel Reverb** + `laravel-echo` + `pusher-js` |
+| API token | **Laravel Sanctum** |
+| PDF / Print | **Spatie Browsershot** (Puppeteer headless Chrome) |
+| Frontend CSS | **Bootstrap 5.2** + Sass |
+| Frontend JS | jQuery, Axios, plain JS (with `face-api.js` models) |
+| Build Tool | **Vite 5** + `laravel-vite-plugin` |
+| Database | **MySQL** (default) — SQLite ដំណើរការបាន |
+| HTTP client | **Guzzle 7.8** |
+| Notifications | Telegram Bot API (3 bots) + Facebook Messenger webhook |
+| CI | GitHub Actions (PHP syntax, view/route/config cache, Unit tests) |
+
+> **ចំណាំ**: Project នេះ **មិន**ប្រើ TailwindCSS, Alpine.js, Vue, ឬ Inertia.js — UI សុទ្ធតែ Bootstrap + Blade។
 
 ## ១.៣ រចនាសម្ព័ន្ធ Project (Folder Structure)
 
 ```
-student-profile-management/
+kuongkea/
 ├── app/
-│   ├── Helpers/helpers.php          # Helper functions (current_branch_id, slug, etc.)
-│   ├── Http/Controllers/           # 35+ Controllers for all modules
-│   ├── Models/                       # 42 Eloquent Models
-│   ├── Policies/                     # Authorization policies
-│   └── Providers/                    # Service providers
+│   ├── Http/
+│   │   ├── Controllers/              # 28 controllers (ខាងក្រោម)
+│   │   │   ├── CustomAuth/LoginController.php       # ការ Login / Permission
+│   │   │   ├── Auth/                                  # Laravel UI scaffolding (មិនសូវប្រើ)
+│   │   │   ├── ExchangeController.php         (~2.5k LOC)  ប្តូរប្រាក់
+│   │   │   ├── MoneyTransferController.php    (~4.3k LOC)  ផ្ទេរប្រាក់
+│   │   │   ├── UserCapitalController.php      (~8.6k LOC)  ដើមទុនបុគ្គលិក
+│   │   │   ├── RealEstateController.php       (~3.8k LOC)  អចលនទ្រព្យ
+│   │   │   ├── ThaiController.php             (~3.4k LOC)  លុយថៃ
+│   │   │   ├── PartnerListController.php      (~2.1k LOC)  បញ្ជីដៃគូ
+│   │   │   ├── CurrencyController.php         (~1.2k LOC)  រូបិយប័ណ្ណ និងតម្លៃ
+│   │   │   ├── StockController.php            (~1.4k LOC)  ស្តុក
+│   │   │   ├── CloseListController.php        (~1.4k LOC)  បិទបញ្ជី
+│   │   │   ├── InvoiceController.php          (~0.6k LOC)  វិក្កយបត្រ
+│   │   │   ├── CustomerController.php, ChildController.php, EmployeeController.php
+│   │   │   ├── CompanyController.php, LandController.php, ExpanseController.php
+│   │   │   ├── CaptureController.php          ការទទួលស្គាល់មុខ (face-api.js)
+│   │   │   ├── FacebookWebhookController.php  Messenger webhook
+│   │   │   ├── SMSController.php              Telegram outbound
+│   │   │   ├── PaymentController.php, ReportController.php, BankTransferController.php
+│   │   │   ├── ChatController.php, HomeController.php, TrackController.php
+│   │   ├── Middleware/
+│   │   │   ├── TrackOnlineUsers.php           # ដាក់ user-online ឲ្យ TrackController
+│   │   │   ├── RedirectIfAuthenticated.php
+│   │   │   └── disableBackBtn.php             # prevent-back-history
+│   ├── Services/
+│   │   └── TelegramService.php                # 3 bot/chat pairs ដែលដំណើរការ
+│   ├── Models/                                # Eloquent models ថ្មី (28 models)
+│   ├── User.php, Role.php, Permission.php,    # Models ចាស់ (legacy app/*.php)
+│   ├── Company.php, Customer.php, …           # មាន ~54 models នៅទីនេះ
+│   └── Mail/, Events/, Providers/
+├── bootstrap/
+│   └── app.php                                # Laravel 11+ slim bootstrap
 ├── config/
-│   └── app.php                       # APP_NAME, APP_NAME_KH, APP_NAME_EN
+│   ├── helper.php                             # ការកំណត់អាជីវកម្ម (system_title, multi_bussiness, …)
+│   ├── services.php                           # Telegram/Facebook tokens
+│   └── database.php, app.php, …
 ├── database/
-│   ├── migrations/
-│   │   └── 2026_04_29_000000_create_student_profile_system_all_tables.php
-│   └── seeders/                      # 25+ seeders with demo data
+│   └── migrations/                            # 6 migration files (បច្ចុប្បន្ន)
 ├── resources/
-│   └── views/admin/                  # All admin Blade views
-├── public/
-│   └── images/logo.png               # School logo for cards
+│   └── views/                                 # 122+ Blade templates ចែកជា 19 folders
+│       ├── master.blade.php, mainfunction.blade.php   # Layout + dashboard
+│       ├── includes/                          # head, sidebar, facerecognit, …
+│       ├── exchanges/, moneytransfers/, usercapitals/, partnerlists/
+│       ├── realestates/, thaicashdraws/, stocks/, customers/, …
 ├── routes/
-│   └── web.php                       # All application routes
-└── .env                              # Environment configuration
+│   └── web.php                                # ~836 lines, 584 named routes
+├── public/
+│   ├── models/                                # face-api.js model weights
+│   ├── logo/, qrcode/, myimages/
+│   └── assets/, css/, js/
+└── .env.example
 ```
+
+## ១.៤ ការផ្លាស់ប្តូរសុវត្ថិភាពថ្មីៗ (Security baseline, post-PR #7)
+
+| ត្រូវការស្គាល់ | ស្ថានភាព |
+|---|---|
+| Hard-coded master passwords | **លុបចេញហើយ** (PR #7) — តែ `Hash::check()` ប៉ុណ្ណោះ |
+| Destructive `Route::get` (ឧ. `/customer/delete`) | **បាន convert ទៅ `Route::post`** (49 routes) — CSRF ការពារ |
+| Login throttle | **`throttle:10,1`** (10 attempts / 1 minute) លើ `POST /login` |
+| Trusted proxies | **`env('TRUSTED_PROXIES')`** — default ទទេ (មិន trust ឲ្យ X-Forwarded-* ទេ) |
+| CSRF on AJAX | `$.ajaxSetup({ headers: { 'X-CSRF-TOKEN': … } })` ក្នុង `master.blade.php` |
 
 ---
 
@@ -57,23 +115,27 @@ student-profile-management/
 
 ## ២.១ តម្រូវការប្រព័ន្ធ (System Requirements)
 
-- **PHP**: 8.2 ឬខ្ពស់ជាង
+- **PHP**: `^8.3` (CI សាកល្បងជាមួយ 8.3)
+- **PHP extensions**: `mbstring`, `pdo_mysql`, `bcmath`, `gd`, `intl`, `zip`, `curl`, `xml`, `fileinfo`, `openssl`
 - **Composer**: ជំនាន់ចុងក្រោយ
-- **Node.js & NPM**: សម្រាប់ compile frontend assets
-- **Database**: SQLite (default) ឬ MySQL 8.0+
+- **Node.js & NPM**: សម្រាប់ compile frontend assets (Vite 5)
+- **Database**: MySQL 8.0+ (default), ឬ SQLite
+- **Chromium / Chrome**: តម្រូវដោយ Spatie Browsershot សម្រាប់ PDF / print
+- **Puppeteer**: ត្រូវការនៅពេល `npm install`
 
 ## ២.២ ជំហានដំឡើង (Step-by-Step)
 
 ### ជំហាន ១ — Clone និង Install Dependencies
 
 ```bash
-# 1. Clone project (ឬ extract zip)
-cd c:\laragon\www\student-profile-management
+# 1. Clone project
+git clone https://github.com/samnangitsr/kuongkea.git
+cd kuongkea
 
 # 2. Install PHP dependencies
 composer install
 
-# 3. Install Node dependencies
+# 3. Install Node dependencies (រួមមាន puppeteer)
 npm install
 ```
 
@@ -81,74 +143,141 @@ npm install
 
 ```bash
 # Copy file .env.example ទៅ .env
-copy .env.example .env
+cp .env.example .env
 
 # Generate application key
 php artisan key:generate
 ```
 
-បើក `.env` ហើយកែតម្រូវ:
+បើក `.env` ហើយកែតម្រូវជារបៀបនេះ:
 
 ```env
-APP_NAME="SITS Information Technology School"
-APP_NAME_KH="សាលាបច្ចេកវិទ្យាព័ត៌មាន អេស អាយ ធី អេស"
-APP_NAME_EN="SITS INFORMATION TECHNOLOGY SCHOOL"
+APP_NAME=kuongkea
+APP_ENV=local
+APP_KEY=base64:...
+APP_DEBUG=true
+APP_URL=http://localhost
 
-# For SQLite (default)
-DB_CONNECTION=sqlite
-# DB_DATABASE=database/database.sqlite
+# Reverse-proxy IP allowlist (សុវត្ថិភាព):
+# - leave EMPTY នៅពេលអ្នកដាក់ direct-internet (default secure)
+# - '*' តែនៅពេលនៅខាងក្រោយ trusted reverse proxy
+TRUSTED_PROXIES=
 
-# For MySQL (optional)
-# DB_CONNECTION=mysql
-# DB_HOST=127.0.0.1
-# DB_PORT=3306
-# DB_DATABASE=student_profile_db
-# DB_USERNAME=root
-# DB_PASSWORD=
+# MySQL (default)
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=kuongkea
+DB_USERNAME=root
+DB_PASSWORD=
+
+# Telegram (សម្រាប់ Notification — 3 bots/chats):
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
+TELEGRAM_BOT_TOKEN1=
+TELEGRAM_CHAT_ID1=
+TELEGRAM_BOT_TOKEN2=
+TELEGRAM_CHAT_ID2=
+
+# Kuongkea-specific bot
+KUONGKEA_BOT_TOKEN=
+KUONGKEA_CHAT_ID=
+
+# Facebook Messenger webhook
+FB_VERIFY_TOKEN=
+FB_PAGE_ID=
+
+# Reverb (realtime - សម្រាប់ user-online tracking)
+BROADCAST_DRIVER=reverb
+PUSHER_APP_ID=
+PUSHER_APP_KEY=
+PUSHER_APP_SECRET=
+PUSHER_HOST=127.0.0.1
+PUSHER_PORT=8080
+PUSHER_SCHEME=http
+PUSHER_APP_CLUSTER=mt1
 ```
 
-### ជំហាន ៣ — បង្កើត Database និង Migrate
+### ជំហាន ៣ — បង្កើត Database
 
 ```bash
-# Create SQLite file (if using SQLite)
-touch database/database.sqlite
+# MySQL: បង្កើត database ឲ្យបានមុនអ្វីៗទាំងអស់
+mysql -u root -p -e "CREATE DATABASE kuongkea CHARACTER SET utf8mb4;"
 
-# Run all migrations (creates 24 table groups)
+# Run migrations (បច្ចុប្បន្ន migrations មាន 6 file — schema ភាគច្រើន
+# ត្រូវ import ពី SQL dump ដែលផ្តល់ដោយ vendor ឬ live database)
 php artisan migrate
 
-# Seed demo data (25+ seeders with sample data)
-php artisan db:seed
+# ប្រសិនបើអ្នកមាន .sql dump:
+mysql -u root -p kuongkea < dump.sql
 ```
 
-> **ចំណាំ**: Seeder រួមមានទិន្នន័យគំរូសម្រាប់រាជធានី-ខេត្ត ស្រុក ឃុំ ភូមិ ទាំងអស់នៅកម្ពុជា។
+> **ការព្រមាន**: Repo នេះ **មិនមាន**ប្រវត្តិ migrations ពេញលេញទេ (តែ 6 ឯកសារ migration ប៉ុណ្ណោះ)។
+> ដើម្បីដំណើរការទាំងស្រុង អ្នកត្រូវការ:
+> - រត់ `php artisan migrate` លើ database ដែលមាន schema រួចជាស្រេច, **ឬ**
+> - Import SQL dump ពី production / staging មុនពេលដំណើរការ។
 
 ### ជំហាន ៤ — Compile Frontend Assets
 
 ```bash
-# Development mode
+# Development (auto-reload)
 npm run dev
 
 # OR Production build
 npm run build
 ```
 
-### ជំហាន ៥ — ចាប់ផ្ដើម Server
+### ជំហាន ៥ — Storage Link និង Permissions
 
 ```bash
-php artisan serve
+# សម្រាប់ user photos, logos, captures
+php artisan storage:link
+
+# Permissions ដែលត្រូវ writable
+chmod -R 775 storage bootstrap/cache
 ```
 
-បើក Browser ទៅ `http://localhost:8000`
+### ជំហាន ៦ — ចាប់ផ្តើម Server
+
+```bash
+# Web server
+php artisan serve
+
+# Reverb (សម្រាប់ user-online tracking)
+php artisan reverb:start
+```
+
+បើក browser ទៅ `http://localhost:8000`។
+
+### ជំហាន ៧ — សាកល្បង Telegram & Facebook (បើបាន config)
+
+```bash
+# Webhook URL ដែលត្រូវ register លើ Facebook Developer:
+# https://YOUR_DOMAIN/facebook/webhook
+# (verify token = FB_VERIFY_TOKEN ក្នុង .env)
+
+# Telegram បាន​ test ដោយ POST ទៅ:
+# /send-sms (route name សម្ងាត់ — សម្រាប់ trusted scripts ប៉ុណ្ណោះ)
+```
 
 ## ២.៣ គណនី Default (Login Credentials)
 
-បន្ទាប់ពី `php artisan db:seed` គណនី Admin ដំបូងមាន:
+ប្រព័ន្ធនេះ **គ្មាន**ការ seed default admin ទេ។ អ្នកត្រូវ:
 
-| ប្រភេទ | Email | Password |
-|---|---|---|
-| Admin | `admin@sits.edu.kh` | `password` |
+1. Import SQL dump ដែលមាន user record រួចហើយ, **ឬ**
+2. បើក DB tool (TablePlus, phpMyAdmin) ហើយ insert user តាមដៃ ដោយ:
+   ```sql
+   INSERT INTO users (username, password, name, role_id, active, is_activated, company_id, no)
+   VALUES ('admin',
+           '$2y$10$...',                      -- bcrypt('your-strong-password')
+           'Administrator',
+           1,                                   -- role_id សម្រាប់ Admin
+           1, 1, 1, 1);
+   ```
+3. បន្ទាប់មក Login ដោយ select **Company** → **Username** → **Password** នៅទំព័រ `/login`។
 
-> ប្ដូរពាក្យសម្ងាត់ភ្លាមបន្ទាប់ពី Login លើកដំបូង!
+> **ការព្រមាន (post-PR #7)**: គ្មាន master password ទៀតទេ។ User ត្រូវមាន `remote_password`
+> (bcrypt) ត្រឹមត្រូវដើម្បីចូល។
 
 ---
 
@@ -156,65 +285,61 @@ php artisan serve
 
 ---
 
-## ៣.១ តារាងទាំងអស់ (All 24 Table Groups)
+## ៣.១ Domain Models សំខាន់ៗ
 
-តារាងត្រូវបានបង្កើតក្នុង file `database/migrations/2026_04_29_000000_create_student_profile_system_all_tables.php`:
+Models ត្រូវបានបែងចែកក្នុង **២ កន្លែង**:
 
-| # | Group | Tables | គោលបំណង |
-|---|---|---|---|
-| 0 | **Branches** | `branches` | សាខាសាលា (multi-campus) |
-| 1 | **Auth** | `roles`, `users`, `permissions`, `role_user`, `permission_role`, `permission_user`, `branch_user` | ប្រព័ន្ធសិទ្ធិ និងអ្នកប្រើ |
-| 2 | **Locations** | `provinces`, `districts`, `communes`, `villages`, `addresses` | ទីតាំងភូមិសាស្ត្រកម្ពុជា |
-| 3 | **Basic Data** | `genders` | ភេទ |
-| 4 | **Staff** | `staff` | បុគ្គលិក និងគ្រូបង្រៀន |
-| 5 | **Students** | `students` | ព័ត៌មានសិស្ស |
-| 6 | **Guardians** | `guardians`, `student_guardians` | ព័ត៌មានឪពុកម្ដាយ/អាណាព្យាបាល |
-| 7 | **Academic** | `courses`, `levels`, `academic_years`, `shifts` | វគ្គសិក្សា ថ្នាក់ ឆ្នាំសិក្សា វេន |
-| 8 | **Buildings** | `buildings`, `rooms` | អគារ និងបន្ទប់ (រួមទាំង dormitory) |
-| 9 | **Classes** | `classes`, `class_schedules`, `enrollments` | ថ្នាក់រៀន កាលវិភាគ ការចុះឈ្មោះ |
-| 10 | **Room Assignments** | `student_room_assignments` | ការចាត់បន្ទប់ស្នាក់នៅ |
-| 11 | **Files** | `student_files` | ឯកសារ និងរូបភាពសិស្ស |
-| 12 | **Print Templates** | `print_templates` | ពុម្ពកាត វិញ្ញាបនបត្រ សញ្ញាបត្រ |
-| 13 | **Student Cards** | `student_cards` | កាតសិស្ស |
-| 14 | **Certificates** | `student_certificates` | វិញ្ញាបនបត្រ |
-| 15 | **Diplomas** | `student_diplomas` | សញ្ញាបត្រ |
-| 16 | **Fees** | `fee_types`, `student_invoices`, `student_invoice_items`, `payments` | ប្រភេទថ្លៃ វិក្កយបត្រ ការទូទាត់ |
-| 17 | **Update Requests** | `student_update_requests` | សំណើកែប្រែព័ត៌មានសិស្ស |
-| 18 | **Print Logs** | `print_logs` | កំណត់ត្រាការបោះពុម្ព |
-| 19 | **Report Logs** | `report_logs` | កំណត់ត្រារបាយការណ៍ |
-| 20 | **Export Logs** | `export_logs` | កំណត់ត្រានាំចេញទិន្នន័យ |
-| 21 | **Audit Logs** | `audit_logs` | កំណត់ត្រាសកម្មភាពអ្នកប្រើ |
-| 22 | **File Protection** | `file_protection_rules`, `file_access_logs` | ការការពារឯកសារ |
-| 23 | **Branch Settings** | `branch_settings` | ការកំណត់សាខា (ឈ្មោះសាលា ឡូហ្គូ ហត្ថលេខា) |
-| 24 | **Attendances** | `attendances` | វត្តមានសិស្ស និងបុគ្គលិក |
+| ទីតាំង | សម័យ | ឧទាហរណ៍ |
+|---|---|---|
+| `app/*.php` (root) | Legacy | `User`, `Company`, `Customer`, `Currency`, `Exchange`, `Invoice`, `Payment`, `PartnerAccount`, `PartnerTransfer`, … |
+| `app/Models/*.php` | ថ្មី | `CustomerExchange`, `CustomerExchangeCapture`, `UserOnline`, `Property`, `PropertyGroup`, `Contract`, `Expanse`, `AgentType`, … |
 
-## ៣.២ Relationship Diagram (រូបភាពទំនាក់ទំនង)
+> **TODO** (សម្គាល់សម្រាប់អ្នកអភិវឌ្ឍ): legacy models ស្ទើរទាំងអស់ **គ្មាន `$fillable`/`$guarded`**, ដែលធ្វើឲ្យ mass-assignment ងាយរងគ្រោះ — សូមមើល Code Review document សម្រាប់រាយលំអិត។
+
+## ៣.២ តារាងសំខាន់ៗ (Key Tables)
+
+| ផ្នែក | តារាង | ការប្រើប្រាស់ |
+|---|---|---|
+| **Authentication / RBAC** | `users`, `roles`, `permissions`, `permission_users` | Login និងសិទ្ធិ |
+| **Multi-company** | `companies` | Branch / company switch by session |
+| **Customers** | `customers`, `customer_children`, `customer_lists`, `customer_temp_lists` | អតិថិជន (រួមកូនសាខា) |
+| **Addresses** | `addresses` (provinces, districts, communes, villages embedded) | ភូមិសាស្ត្រ |
+| **Currency / Exchange** | `currencies`, `exchanges`, `exchange_multi`, `exchange_rates`, `exchange_rate_products`, `product_rates`, `currency_buttons` | តម្លៃ និងការប្តូរ |
+| **Stock** | `stocks`, `stock_reports`, `stock_prints` | ស្តុករូបិយប័ណ្ណ |
+| **Invoice / Payment** | `invoices`, `invoice_details`, `invoice_payments`, `payments`, `payment_details`, `items`, `temp_invoices` | វិក្កយបត្រ |
+| **Partner** | `partner_accounts`, `all_partner_lists`, `partner_total_lists`, `partner_transfers`, `partner_transfer_lists`, `partner_exchange_lists`, `partner_close_lists`, `partner_cashdraw_temps` | សៀវភៅបញ្ជីដៃគូ |
+| **Money Transfer** | `bank_transactions`, `money_print_slips`, `money_transfer_updates`, `cashdraws`, `cashdraw_selects`, `cashdraw_images`, `daily_close_lists` | ផ្ទេរប្រាក់ |
+| **Thai Cash-draw** | `thai_accounts`, `thai_customers`, `thai_close_lists`, `sms`, `sms_names`, `sms_processes`, `sms_refreshes`, `wing_code_infos`, `wing_transaction_names` | លុយថៃ |
+| **Real Estate** | `properties`, `property_groups`, `contracts`, `sale_details`, `new_pay_romlos`, `pay_commissions`, `agent_types`, `agent_rate_sets` | អចលនទ្រព្យ |
+| **User Capital** | `user_capital_*`, `close_lists`, `close_list_details` | ដើមទុនបុគ្គលិក |
+| **Expense / Income** | `expanses`, `expanse_types` | ចំណូល-ចំណាយ |
+| **Face Recognition** | `customer_exchanges`, `customer_exchange_captures` | រូបភាព + 128-float face embedding |
+| **Online presence** | `user_onlines`, `page_times` | តាមដាន user (Reverb) |
+| **Misc** | `permissions` codes, `set_over_days` | Audit / day-lock |
+
+## ៣.៣ Relationship Highlights
 
 ```
-Branch (1)
-├── Users (N)
-├── Staff (N)
-├── Students (N)
-│   ├── Guardians (M via student_guardians)
-│   ├── Enrollments (N)
-│   │   └── Classes (N)
-│   ├── StudentCards (N)
-│   ├── StudentCertificates (N)
-│   ├── StudentDiplomas (N)
-│   ├── StudentFiles (N)
-│   ├── StudentInvoices (N)
-│   │   ├── StudentInvoiceItems (N)
-│   │   └── Payments (N)
-│   └── StudentRoomAssignments (N)
-│       └── Rooms (N)
-│           └── Buildings (N)
-├── AcademicYears (N)
-├── Classes (N)
-│   ├── Courses (N)
-│   │   └── Levels (N)
-│   ├── Shifts (N)
-│   └── ClassSchedules (N)
-└── BranchSettings (1)
+Company (1) ─┬─ Users (N)            (company_id, role_id)
+             ├─ Customers (N)
+             ├─ Currencies (N)
+             ├─ Exchanges (N)
+             ├─ Invoices (N)
+             ├─ PartnerAccounts (N)
+             ├─ Properties (N)
+             └─ ThaiAccounts (N)
+
+User (1) ────┬─ Role (1)              (role_id → roles.id)
+             ├─ Permissions (N)       (permission_users.pcdt = រាប់/លំនាំ)
+             └─ Capital records (N)
+
+Customer (1) ─ Children (N), Captures (N), Invoices (N), …
+
+Exchange (1) ─ ExchangeRate(s), Stock movement(s)
+
+Partner Transfer (1) ─ TransferLists (N), PrintSlip (1), CashDraw (N)
+
+Real-Estate Property (1) ─ Contract (1) ─ Payments (N) ─ Commissions (N)
 ```
 
 ---
@@ -223,209 +348,249 @@ Branch (1)
 
 ---
 
-## ៤.១ Dashboard (ផ្ទាំងគ្រប់គ្រង)
+## ៤.១ Login & Dashboard
 
-**URL**: `/dashboard`
+| URL | Method | Route name | ការប្រើប្រាស់ |
+|---|---|---|---|
+| `/` | GET | (closure) | Landing — redirect ទៅ `/login` |
+| `/login` | GET | `showlogin` | Form login (Company → User → Password) |
+| `/login` | **POST** | `checklogin` | ដំណើរការ login (មាន `throttle:10,1`) |
+| `/dashboard` | GET | `dashboard` | Main function board (4–8 cards) |
+| `/logout` | POST | `logout` | ចេញចាក |
+| `/home` | GET | `home` | (legacy — Laravel default) |
+| `/login/getuserbycompany` | GET | `login.getuserbycompany` | ផ្ទុក user list នៅពេលអ្នកប្រើ select company |
+| `/register` | GET | `userregister` | Form ចុះឈ្មោះ user (admin-driven) |
+| `/storeuser` | POST | `storeuser` | រក្សា user ថ្មី |
 
-បង្ហាញស្ថិតិសង្ខេប:
-- ចំនួនសិស្សសរុប / សិស្សសកម្ម
-- ការចុះឈ្មោះដែលកំពុងសិក្សា
-- វគ្គសិក្សា និងថ្នាក់សកម្ម
-- វិក្កយបត្រដែលមិនទាន់បង់
-- ការទូទាត់សរុប
+**Note**: `showdashboard()` ត្រឡប់ `mainfunction.blade.php` សម្រាប់ Admin
+ហើយ `master.blade.php` សម្រាប់ user ផ្សេងៗ។
 
-> **ចំណាំ**: Dashboard បង្ហាញតែទិន្នន័យសាខាដែលបានជ្រើសរើស (branch-scoped)។
+## ៤.២ ដើមទុនបុគ្គលិក (User Capital) — `UserCapitalController`
 
-## ៤.២ Branch Management (គ្រប់គ្រងសាខា)
+Card ដំបូងនៅ Dashboard។ ប្រើដោយម្ចាស់ហាង/ម៉ាណេជ័រ ដើម្បីតាមដានដើមទុនរបស់បុគ្គលិកនិមួយៗ។
 
-**URL**: `/admin/branches`
-
-- **Create**: បន្ថែមសាខាថ្មី (កូដ ឈ្មោះខ្មែរ/អង់គ្លេស អាសយដ្ឋាន ទូរសព្ទ ឡូហ្គូ)
-- **Switch**: ផ្លាស់ប្ដូរសាខាកំពុងប្រើ (session-based)
-- **Settings**: កំណត់ឈ្មោះសាលា ឡូហ្គូ ហត្ថលេខា ស្តាប់សាលា លេខទូរសព្ទ អ៊ីមែល
-
-## ៤.៣ User Management (គ្រប់គ្រងអ្នកប្រើ)
-
-**URL**: `/admin/users`
-
-- បង្កើត / កែ / លុបអ្នកប្រើ
-- កំណត់ Role និង Permission
-- កំណត់សាខា (branch assignment)
-
-## ៤.៤ Roles & Permissions (សិទ្ធិ)
-
-**URLs**: `/admin/roles`, `/admin/permissions`
-
-ប្រព័ន្ធសិទ្ធិមាន ៣ កម្រិត:
-1. **Role** (ឧ. Admin, Manager, Receptionist, Teacher, Accountant)
-2. **Permission** (ឧ. `students.view`, `students.create`, `students.edit`, `students.delete`)
-3. **Permission per User** (override ជារបស់គណនី)
-
-## ៤.៥ Student Management (គ្រប់គ្រងសិស្ស)
-
-**URL**: `/admin/students`
-
-ព័ត៌មានសិស្សរួមមាន:
-- **បញ្ជីសិស្ស**: DataTable មាន Search, Filter, Export
-- **បង្កើតសិស្ស**: បំពេញកូដសិស្ស ឈ្មោះខ្មែរ/ឡាតាំង ភេទ ថ្ងៃកំណើត ទីកន្លែងកំណើត អាសយដ្ឋានបច្ចុប្បន្ន ទូរសព្ទ អ៊ីមែល រូបថត
-- **មើលលំអិត**: Profile សិស្សពេញលេញ
-- **កែសម្រួល**: Update ព័ត៌មានណាមួយ
-- **Soft Delete**: លុបបណ្ដោះអាសន្ន (recoverable)
-
-### Sub-features per Student:
-
-| Feature | URL Pattern | គោលបំណង |
+| Menu (ខ្មែរ) | URL | Route name |
 |---|---|---|
-| Files | `/admin/students/{id}/files` | Upload រូបភាព ឯកសារ (ប្រភេទ: photo, birth_certificate, id_card, certificate, diploma, document) |
-| Room Assignments | `/admin/students/{id}/room-assignments` | ចាត់បន្ទប់ស្នាក់នៅ និង Check-in/Check-out |
-| Cards | `/admin/students/{id}/cards` | បង្កើត/កែ/បោះពុម្ពកាតសិស្ស |
-| Certificates | `/admin/students/{id}/certificates` | បង្កើត/កែ/បោះពុម្ពវិញ្ញាបនបត្រ |
-| Diplomas | `/admin/students/{id}/diplomas` | បង្កើត/កែ/បោះពុម្ពសញ្ញាបត្រ |
-| Update Requests | `/admin/students/{id}/update-requests` | សំណើកែប្រែព័ត៌មាន |
+| ដើមទុនបុគ្គលិក | `/usercapital` | `usercapital.index` |
+| បិទបញ្ជីបុគ្គលិក | `/usercapital/closelist` | `usercapital.closelist` |
+| ប្រតិបត្តិការណ៏បុគ្គលិក | `/usercapital/usertransactionreport` | `usercapital.usertransactionreport` |
+| របាយការណ៏បុគ្គលិក | `/usercapital/userstatementreport` | `usercapital.userstatementreport` |
+| បុគ្គលិកស្នើរប្រាក់ | `/usercapital/moneyoffer` | `usercapital.moneyoffer` |
+| ប្រាក់ចំណេញ | `/usercapital/userprofit` | `usercapital.userprofit` |
+| ចំណូលចំណាយ | `/expanseincome` | `expanseincome.index` |
 
-## ៤.៦ Guardian Management (គ្រប់គ្រងឪពុកម្ដាយ)
+ឧទាហរណ៍ workflow:
 
-**URL**: `/admin/guardians`
+```
+ដើមទុនបុគ្គលិក → ជ្រើសបុគ្គលិក → ឃើញ master + transaction list
+                              ├─ កែ (usercapital.edit / .updateusercapital)
+                              ├─ បន្ត (usercapital.capitalcontinue)
+                              ├─ បិទបញ្ជី (usercapital.closelist / .store_endbalance_all)
+                              └─ មើលលំអិត (.seedetail / .seedetail1by1)
+```
 
-- បង្កើតអាណាព្យាបាលថ្មី
-- ភ្ជាប់ទៅនឹងសិស្ស (relationship: father, mother, guardian, etc.)
-- កំណត់ **Primary Guardian** (is_primary = true) — នឹងបង្ហាញលើកាតសិស្ស
+## ៤.៣ ប្តូរប្រាក់ (Currency Exchange) — `ExchangeController`, `CurrencyController`
 
-## ៤.៧ Academic Setup (ការកំណត់វិទ្យាស្ថាន)
+Card ទីពីរនៅ Dashboard។ ស្នូលនៃប្រព័ន្ធ។
 
-### Courses (វគ្គសិក្សា)
-**URL**: `/admin/courses`
-- ឈ្មោះវគ្គ ការពិពណ៌នា ស្ថានភាព
-- **Levels** (ថ្នាក់): ភ្ជាប់ទៅ Course (ឧ. វគ្គ IT → Level 1, Level 2, Level 3)
-
-### Academic Years (ឆ្នាំសិក្សា)
-**URL**: `/admin/academic-years`
-- ឈ្មោះឆ្នាំ ថ្ងៃចាប់ផ្ដើម ថ្ងៃបញ្ចប់
-- កំណត់ **Current Year** (is_current = true)
-
-### Shifts (វេន)
-**URL**: `/admin/shifts`
-- ឈ្មោះវេន ម៉ោងចាប់ផ្ដើម ម៉ោងបញ្ចប់ (ឧ. Morning 8:00-11:00, Afternoon 13:00-16:00)
-
-## ៤.៨ Class Management (គ្រប់គ្រងថ្នាក់)
-
-**URL**: `/admin/classes`
-
-- **Class Code**: កូដថ្នាក់ (ឧ. IT-L1-MOR-2026)
-- **Course & Level**: ភ្ជាប់ទៅវគ្គ និងថ្នាក់
-- **Academic Year & Shift**: ភ្ជាប់ឆ្នាំសិក្សា និងវេន
-- **Teacher**: ជ្រើសរើសពី Staff
-- **Room**: បន្ទប់រៀន
-- **Schedules**: កាលវិភាគប្រចាំសប្ដាហ៍ (ថ្ងៃ ម៉ោងចាប់ផ្ដើម-បញ្ចប់)
-
-## ៤.៩ Enrollment (ការចុះឈ្មោះ)
-
-**URL**: `/admin/enrollments`
-
-- ចុះឈ្មោះសិស្សចូលថ្នាក់
-- **Status**: studying, completed, dropped, transferred
-- **Study Time Label**: សម្គាល់ពេលវេលាសិក្សា
-- បង្ហាញប្រវត្តិចុះឈ្មោះទាំងអស់របស់សិស្ស
-
-## ៤.១០ Attendance (វត្តមាន)
-
-**URL**: `/admin/attendances`
-
-- បំពេញវត្តមានប្រចាំថ្ងៃ (បុគ្គលិក ឬសិស្ស)
-- **Status**: present, absent, late, excused
-- **Check-in / Check-out time**
-- Bulk Entry: បំពេញវត្តមានច្រើននាក់ក្នុងថ្នាក់តែម្ដង
-
-## ៤.១១ Fee Management (គ្រប់គ្រងថ្លៃ)
-
-### Fee Types (ប្រភេទថ្លៃ)
-**URL**: `/admin/fees/types`
-- ឈ្មោះប្រភេទថ្លៃ (ឧ. ថ្លៃសិក្សា, ថ្លៃសៀវភៅ, ថ្លៃប្រឡង) និងចំនួនទឹកប្រាក់
-
-### Invoices (វិក្កយបត្រ)
-**URL**: `/admin/fees/invoices`
-- បង្កើតវិក្កយបត្រសម្រាប់សិស្ស
-- បន្ថែមធាតុ (items) ពី Fee Types
-- **Status**: unpaid, partial, paid, cancelled
-- គណនាតុល្យភាព (Balance) ដោយស្វ័យប្រវត្តិ
-
-### Payments (ការទូទាត់)
-**URL**: `/admin/fees/payments`
-- ទទួលការទូទាត់ពីសិស្ស
-- **Method**: cash, bank, ABA, Wing, other
-- ភ្ជាប់ទៅ Invoice (optional)
-- គណនាតុល្យភាពវិក្កយបត្រដោយស្វ័យប្រវត្តិ
-
-## ៤.១២ Room & Building (អគារ និងបន្ទប់)
-
-**URL**: `/admin/rooms`
-
-- **Buildings**: អគារថ្មី (ឈ្មោះ អាសយដ្ឋាន)
-- **Rooms**: បន្ទប់ (លេខ ប្រភេទ: single/double/shared/classroom, ចំណុះ, តម្លៃប្រចាំខែ)
-- **Status**: available, full, maintenance, inactive
-
-## ៤.១៣ Print System (ប្រព័ន្ធបោះពុម្ព)
-
-### Print Templates (ពុម្ពបោះពុម្ព)
-**URL**: `/admin/print-templates`
-
-ប្រព័ន្ធពុម្ពអាចកែប្រែបានទាំងស្រុង:
-- **Template Types**: student_card, certificate, diploma
-- **HTML Template**: កែ HTML structure
-- **CSS Template**: កែ styling
-- **Settings**: JSON config បន្ថែម
-- **Default Template**: កំណត់ពុម្ពដើម្បីប្រើដោយស្វ័យប្រវត្តិ
-
-### Student Cards (កាតសិស្ស)
-**URL**: `/admin/student-cards`
-
-- បង្ហាញកាតទាំងអស់ក្នុងប្រព័ន្ធ
-- **Bulk Print**: ជ្រើសរើសច្រើនកាត → Print ព្រមគ្នា (4 កាត/ទំព័រ A4)
-- **Single Print**: Print កាតតែមួយ (ទំហំពេញ A4 landscape)
-- **Card Layout** (បច្ចុប្បន្ន): Header ពណ៌ខៀវ `#0000ff` + ឈ្មោះសាលា រាងកោងក្រហមតាមរយៈ SVG រូបថត និងព័ត៌មានសិស្ស
-
-### Certificates & Diplomas
-**URL**: `/admin/student-certificates`, `/admin/student-diplomas`
-
-- **Workflow**: Draft → Approved → Printed → Cancelled
-- **Approval**: អ្នកមានសិទ្ធិ approve ទើបបោះពុម្ពបាន
-- **Print Log**: កត់ត្រាចំនួនការបោះពុម្ព
-
-## ៤.១៤ Reports (របាយការណ៍)
-
-**URL**: `/admin/reports`
-
-របាយការណ៍ដែលមាន:
-1. **Student Report** — បញ្ជីសិស្សតាមលក្ខខណ្ឌ
-2. **New Admissions** — សិស្សចុះឈ្មោះថ្មី
-3. **Class Roster** — បញ្ជីសិស្សតាមថ្នាក់
-4. **Monthly Attendance** — វត្តមានប្រចាំខែ
-5. **Daily Cash Receipts** — ទទួលលុយប្រចាំថ្ងៃ
-6. **AR Aging** — វិក្កយបត្រដែលនៅជំពាក់
-7. **Revenue Report** — ចំណូលសរុប
-8. **Fee Statement** — របាយការណ៍ថ្លៃសិក្សា
-
-**Export Formats**: PDF, Excel, CSV, Print, View
-
-## ៤.១៥ Logs & Auditing (កំណត់ត្រា)
-
-| Log Type | URL | គោលបំណង |
+| Menu | URL | Route name |
 |---|---|---|
-| Audit Logs | `/admin/audit-logs` | កត់ត្រាសកម្មភាពទាំងអស់ (create, update, delete) |
-| Report Logs | `/admin/report-logs` | កត់ត្រាការបង្កើតរបាយការណ៍ |
-| Export Logs | `/admin/export-logs` | កត់ត្រាការនាំចេញទិន្នន័យ |
-| Print Logs | `/admin/print-logs` | កត់ត្រាការបោះពុម្ព |
-| File Access Logs | `/admin/file-access-logs` | កត់ត្រាការចូលមើលឯកសារ |
+| ប្តូរប្រាក់ | `/exchange` | `exchange.index` |
+| របាយការណ៏ប្តូរប្រាក់ | `/exchangelists` | `exchangelists` |
+| កំណត់អត្រាប្តូរប្រាក់ថ្មី | `/currency/exchangeratenew` | `currency.exchangeratenew` |
+| កំណត់រូបិយប័ណ្ណ | `/currency` | `currency.index` |
+| កំណត់អត្រាផ្ទេរប្រាក់ | `/moneytransfer/settransferrate` | `moneytransfer.settransferrate` |
 
-## ៤.១៦ File Protection (ការពារឯកសារ)
+### Workflow ប្តូរប្រាក់ដោយដៃ (manual exchange)
 
-**URL**: `/admin/file-protection-rules`
+```
+ប្តូរប្រាក់ → ជ្រើស customer (ឬចុចមុខអតិថិជនពី face capture)
+           → ជ្រើស currency ដែលផ្តល់ + currency ដែលទទួល
+           → វាយចំនួន (auto convert តាមអត្រា)
+           → "រក្សាប្រតិបត្តិការ" → Stock update + Profit calc + Partner-list update
+```
 
-កំណត់តាម Role:
-- Allow Download? (បើក/បិទ)
-- Allow Print? (បើក/បិទ)
-- Allow Export? (បើក/បិទ)
-- Watermark? (បើក/បិទ)
+### Face Recognition mode (បើ `config('helper.exchange_auto_capture') == 1`)
+
+- ទំព័រ `/facerecognit` បើកដោយស្វ័យប្រវត្តិក្នុង tab ថ្មីពេលអ្នកចូល `/exchange`
+- ប្រើ **face-api.js** (model weights នៅ `public/models/`)
+- រូបភាព + 128-float embedding ត្រូវ POST ទៅ `/capture` (`customer.capture`)
+- បើ distance ≤ **0.55** (Euclidean) → match អតិថិជនចាស់; បើមិន match → create new `CustomerExchange`
+- រូបភាពរក្សាក្នុង `storage/app/public/customers/`
+
+### TV / Sidebar Rate Display (សម្រាប់ display screen ខាងមុខហាង)
+
+| URL | Route name | គោលដៅ |
+|---|---|---|
+| `/tv` | `currency.ratedisplaytv` | TV-style rate board (auto-refresh) |
+| `/allrate` | `currency.ratedisplay` | រាប់រូបិយប័ណ្ណទាំងអស់ |
+| `/ratedisplayforcustomer` | `currency.ratedisplayforcustomer` | សម្រាប់ផ្ញើ link អតិថិជន |
+| `/ratedisplayrightsidebar` | `currency.ratedisplayrightsidebar` | sidebar embed |
+| `/refreshdisplayrate*` | `currency.refreshdisplayrate(*)` | AJAX poll for rate updates |
+| `/ratedisplay/sendtosocialmedia` | `ratedisplay_sendtosocial` | រក្សា snapshot ហើយផ្ញើទៅ Telegram/Messenger |
+
+## ៤.៤ ផ្ទេរប្រាក់ (Money Transfer) — `MoneyTransferController`
+
+Card ទីបីនៅ Dashboard។ Controller ធំជាងគេ (~4.3k LOC, 60+ routes)។
+
+| Menu | URL | Route name |
+|---|---|---|
+| ផ្ទេរប្រាក់ដៃគូ | `/moneytransfer/formtransfer` | `moneytransfer.formtransfer` |
+| ផ្ទេរតាមធនាគារ | `/moneytransfer/banktransfer` | `moneytransfer.banktransfer` |
+| ផ្ទេរតាមវីង | `/moneytransfer/wingtransfer` | `moneytransfer.wingtransfer` |
+| អតិថិជនដាក់ដក | `/moneytransfer/customertransfer` | `moneytransfer.customertransfer` |
+| ដាក់ដករហ័ស | `/moneytransfer/quicktransfer` | `moneytransfer.quicktransfer` |
+| បើកវេរក្នុងស្រុក | `/moneytransfer/cashdraw` | `moneytransfer.cashdraw` |
+
+### Workflow ផ្ទេរប្រាក់ដៃគូ
+
+```
+ផ្ទេរប្រាក់ → ផ្ទេរប្រាក់ដៃគូ
+           → ជ្រើស Partner (ដៃគូ) + Currency
+           → វាយ amount + tel/customer
+           → Save to temp list (moneytransfer.savetotemplist)
+           → "បញ្ជូន" → moneytransfer.store
+              ├─ បង្កើត partner_transfer + transfer_list rows
+              ├─ Update partner_account balance
+              ├─ បោះពុម្ព slip (moneytransfer.print)
+              └─ ផ្ញើ Telegram notification (TelegramService)
+```
+
+### បើកវេរក្នុងស្រុក (Local Cash-Draw)
+
+```
+បើកវេរក្នុងស្រុក → វាយលេខទូរសព្ទ ឬ amount
+                  → moneytransfer.searchcashdraw (រកការផ្ទេរដែលអ្នកនៅរង់ចាំ)
+                  → ជ្រើស → moneytransfer.savecashdraw
+                  → Bond លុយក្នុងស្តុក → mark cashdraw=true
+```
+
+### Sub-features ខ្លះៗ (ច្រើនជាង 60 routes)
+
+- `moneytransfer.delete` / `moneytransfer.update` — កែ / លុបប្រតិបត្តិការ
+- `moneytransfer.update_delete_report` — អ៊ូឌីត update/delete history
+- `moneytransfer.sendpartnerslip` — ផ្ញើ slip TO Telegram
+- `moneytransfer.settransferrate` — កំណត់ការគិតថ្លៃផ្ទេរ
+- `moneytransfer.getwingrate` / `.gettranname` — Wing-specific lookups
+- `moneytransfer.transactiontransfertothai` — bridge ទៅ Thai module
+
+## ៤.៥ បញ្ជីដៃគូ (Partner Ledger) — `PartnerListController`
+
+Card ទីបួននៅ Dashboard។ ប្រើសម្រាប់ track ត្រូវការ-ត្រូវឲ្យ (receivable/payable) ជាមួយដៃគូជំនួញ។
+
+| Menu | URL | Route name |
+|---|---|---|
+| សៀវភៅបញ្ជីថ្មី | `/partnerlist/indexnew` (target=_blank) | `partnerlist.indexnew` |
+| សៀវភៅបញ្ជីចាស់ | `/partnerlist` | `partnerlist.index` |
+| បញ្ជីដៃគូទាំងអស់ | `/partnerlist/alllist` | `partnerlist.alllist` |
+| កាត់កងបញ្ជីដៃគូ | `/partnerlist/exchangelist/0` | `partnerlist.exchangelist` |
+| លុបកាត់កង | `/exchangelist/delkatkong` | `exchangelist.delkatkong` |
+| របាយការណ៏កាត់កង | `/partnerlist/exchangelistreport/0` | `partnerlist.exchangelistreport` |
+
+**"កាត់កង" (netting) workflow**:
+
+```
+បញ្ជីដៃគូ → ជ្រើស 2 partners ដែលមាន reciprocal balance
+         → exchange amount at custom rate
+         → Save (partnerlist.saveexchangelistleft) → both balances ល្បាន
+         → វាមកត្រឹមត្រូវ (offsetting entries)
+```
+
+## ៤.៦ លុយថៃ (Thai Money / Cross-border) — `ThaiController`
+
+Card ទីប្រាំ (~3.4k LOC, 80+ routes)។ សម្រាប់ផ្ទេរប្រាក់ទៅ-មកប្រទេសថៃ ដោយប្រើ SMS parsing។
+
+| Menu | URL | Route name |
+|---|---|---|
+| សារថៃ | `/thaicashdraw/thaisms` | `thaicashdraw.thaisms` |
+| បើកវេរលុយថៃ | `/thaicashdraw/cashdraw` | `thaicashdraw.cashdraw` |
+| ទំនាក់ទំនងអតិថិជន | `/thaicashdraw/cashdraw1` | `thaicashdraw.cashdraw1` |
+| របាយការណ៏បើកវេរថៃ | `/thaicashdraw/cashdrawreport` | `thaicashdraw.cashdrawreport` |
+| របាយការណ៏ស្តុកថៃ | `/thaicashdraw/notyetcashdrawreport` | `thaicashdraw.notyetcashdrawreport` |
+| ចុះលេខបញ្ជី | `/thaicashdraw/accountregister` | `thaicashdraw.accountregister` |
+| បិទបញ្ជីលុយថៃ | `/thaicashdraw/closelist` | `thaicashdraw.closelist` |
+
+### Workflow សារថៃ → បើកវេរ
+
+```
+1. SMS ពីធនាគារថៃចូលប្រព័ន្ធ (parse → sms table → sms_processes)
+2. បុគ្គលិកមើលនៅ "សារថៃ" (thaicashdraw.thaisms)
+   → ចុចលើ SMS → match ទៅ Thai customer (thaicustomer.read)
+   → "បើកវេរលុយថៃ" (thaicashdraw.cashdraw1 / .cashdraw2)
+3. បន្ទាប់ពី match: គិតប្រាក់ដែលត្រូវឲ្យអតិថិជន → savecashdraw → តម្រូវ Stock thai-money
+```
+
+ក្នុង `config/helper.php`:
+- `thai_bangkut_usd=1` ប្តូរ format ការបង្ហាញ Bangkut
+- `khmer_bangkut_usd=0` បិទវានៅ Khmer side
+
+## ៤.៧ អចលនទ្រព្យ (Real Estate) — `RealEstateController`, `LandController`
+
+Card ទីប្រាំមួយ (~3.8k LOC, 60+ routes)។ បើ `config('helper.realestate') == 1` (បច្ចុប្បន្នបើក)។
+
+| Menu | URL | Route name |
+|---|---|---|
+| លក់អចលនទ្រព្យ | `/realestate` | `realestate.index` |
+| តារាងលក់ | `/realestate/soldpropertylist` | `realestate.soldpropertylist` |
+| តារាងឈ្មោះបង់រំលស់ | `/realestate/customerromloslist` | `realestate.customerromloslist` |
+| ចុះឈ្មោះអចលនទ្រព្យ | `/land` | `land.index` |
+| ធ្វើកុងត្រាលក់ | `/realestate/docontract` | `realestate.docontract` |
+
+### Sub-workflows
+
+```
+ចុះឈ្មោះ → វាយព៌តមានដី/ផ្ទះ (Property + PropertyGroup) → ដាក់ photo
+ធ្វើកុងត្រា → ជ្រើស property + customer → savedeposit + savedocontract
+បង់រំលស់   → realestate.payment → savenewpayromlos (តាមកាលវិភាគ)
+Commission → addcommission → updatecommissionlink → savedepositcommission
+```
+
+## ៤.៨ ការចុះឈ្មោះ (Registration) — `CustomerController`, etc.
+
+Card ទីប្រាំពីរ។
+
+| Menu | URL | Route name |
+|---|---|---|
+| ចុះឈ្មោះអតិថិជន | `/customer` | `customer.index` |
+| ចុះឈ្មោះកូនសាខា | `/child` | `child.index` |
+| ចុះឈ្មោះខេត្តក្រុង | `/address` | `address.index` |
+| ចុះឈ្មោះអ្នកប្រើប្រាស់ | `/register` | `userregister` |
+| ចុះឈ្មោះក្រុមហ៊ុន | `/company/register` | `company.register` |
+
+### Sub-routes
+
+- `customer.store`, `customer.print`, `customer.deleteaccount`, `customer.savepartneraccount`
+- `customer.checkcloselist`, `customer.savecloselist`
+- `address.saveprovince`, `address.savedistrict`, `address.savecommune`, `address.savevillage`
+- `child.store`, `child.search`
+- `company.store`, `company.update`, `company.destroy`
+
+## ៤.៩ របាយការណ៏ (Reports) — `ReportController`, `CloseListController`, `StockController`
+
+Card ទីប្រាំបី។
+
+| Menu | URL | Route name |
+|---|---|---|
+| បញ្ជីលុយកាក់ | `/closelist` | `closelist.index` |
+| របាយការណ៏បិទបញ្ជី | `/closelist/report` | `closelist.report` |
+| របាយការណ៏សង្ខេប | `/closelist/summaryreport` | `closelist.summaryreport` |
+| ប្រាក់ចំណេញផ្ទេរប្រាក់ | `/report/transferprofit` | `report.transferprofit` |
+| របាយការណ៏ស្តុក | `/stock/report` | `stock.report` |
+| របាយការណ៏ទិញលក់ | `/stock/reportbuysale` | `stock.reportbuysale` |
+| ព៌តមានស្តុក | `/stock` | `stock.index` |
+
+Export ភាគច្រើនបោះពុម្ពតាម browser (HTML print page)។ PDF ខ្លះៗប្រើ Spatie Browsershot (headless Chrome)។
+
+## ៤.១០ មុខងារផ្សេងៗ (Auxiliary)
+
+| មុខងារ | Controller | សម្គាល់ |
+|---|---|---|
+| Face capture | `CaptureController` | face-api.js, 128-float embedding, Match threshold 0.55 |
+| Telegram outbound | `SMSController` → `TelegramService` | 3 bots (main + 2 secondary) |
+| Facebook webhook | `FacebookWebhookController` | `/facebook/webhook` GET (verify) + POST (events) |
+| Online tracking | `TrackController` + `TrackOnlineUsers` middleware | `user_onlines`, `page_times` |
+| Chat (legacy) | `ChatController` | `/chatpage` (sandbox) |
+| Email verification | `LoginController::verifyEmailFirst`, `sendEmailDone` | សម្រាប់ flow ចុះឈ្មោះ |
 
 ---
 
@@ -433,62 +598,54 @@ Branch (1)
 
 ---
 
-## ៥.១ វិធីប្រើប្រាស់មូលដ្ឋាន
-
-### ជំហានដំបូងប្រចាំថ្ងៃ
-
-1. **Login** ចូប្រព័ន្ធ
-2. **ជ្រើសរើសសាខា** (Branch Switcher នៅខាងលើអេក្រង់)
-3. **ពិនិត្យ Dashboard** សម្រាប់ស្ថិតិសង្ខេប
-
-### ការចុះឈ្មោះសិស្សថ្មី
+## ៥.១ ចាប់ផ្តើមថ្ងៃ
 
 ```
-Students → Create New
-  ├─ បំពេញព័ត៌មានផ្ទាល់ខ្លួន
-  ├─ បំពេញអាសយដ្ឋាន (ខេត្ត → ស្រុក → ឃុំ → ភូមិ)
-  ├─ Upload រូបថត
-  ├─ ភ្ជាប់ Guardian (father/mother/guardian)
-  └─ បង្កើត Card (បើាត្រូវការ)
-      └─ Print Card
+1. បើក browser → http://YOUR_DOMAIN/login
+2. ជ្រើស Company (បើមានច្រើន)
+3. ជ្រើស Username + វាយ Password → Sign in
+4. ច្រកចូល Dashboard → ឃើញ 8 card សំខាន់ៗ
 ```
 
-### ការចុះឈ្មោះចូលថ្នាក់
+## ៥.២ ប្តូរប្រាក់អតិថិជន (Walk-in Exchange)
 
 ```
-Enrollments → Create
-  ├─ ជ្រើសរើសសិស្ស
-  ├─ ជ្រើសរើសថ្នាក់ (Class)
-  ├─ ជ្រើសរើសឆ្នាំសិក្សា
-  ├─ ជ្រើសរើសវេន (Shift)
-  └─ កំណត់ស្ថានភាព: studying
+[បើក auto-capture]              [បើគ្មាន auto-capture]
+Camera capture face →            ប្តូរប្រាក់ → ជ្រើស customer
+matchCustomer found →            → វាយ amount source + target currency
+ប្តូរប្រាក់ + customer auto-fill   → Save exchange
+                                  └─ Stock deduct + profit calc + slip print
 ```
 
-### ការបង់ថ្លៃសិក្សា
+## ៥.៣ ផ្ទេរប្រាក់ជូនដៃគូ
 
 ```
-Fees → Invoices → Create
-  ├─ ជ្រើសរើសសិស្ស
-  ├─ បន្ថែម Items (ប្រភេទថ្លៃ + ចំនួន)
-  ├─ រក្សាទុក → Status: unpaid
-  │
-  └─ Payments → Create
-      ├─ ជ្រើសរើស Invoice
-      ├─ បំពេញចំនួនលុយ
-      ├─ ជ្រើស Method (cash/bank/ABA/Wing)
-      └─ Save → តុល្យភាពវិក្កយបត្រត្រូវបាន update ដោយស្វ័យប្រវត្តិ
+ផ្ទេរប្រាក់ → ផ្ទេរប្រាក់ដៃគូ
+           → ជ្រើស partner (ឧ. ហាងផ្ទេរនៅខេត្ត) + currency
+           → វាយ tel + amount
+           → "បន្ថែម" → temp list
+           → "បញ្ជូន" → POST /moneytransfer/store
+              ├─ បង្កើត partner_transfer record
+              ├─ Update partner balance
+              ├─ បោះពុម្ព slip (browser print modal)
+              └─ Telegram notification
 ```
 
-### ការបោះពុម្ពកាតសិស្ស
+## ៥.៤ បើកវេរ (Cash-Draw) ស្រុក/ថៃ
 
 ```
-Students → [សិស្ស] → Cards
-  ├─ Create Card → បំពេញថ្ងៃចេញ និងថ្ងៃផុតកំណត់
-  └─ Print → បោះពុម្ពកាតតែមួយ (A4 landscape)
+ស្រុក:  បើកវេរក្នុងស្រុក → search by tel/amount → ជ្រើស transaction → save
+ថៃ:    សារថៃ → ចុច SMS → ជ្រើស customer → "បើកវេរ" → save
+```
 
-ឬ
+## ៥.៥ បិទបញ្ជីចុងថ្ងៃ (End-of-Day Close)
 
-Student Cards → ជ្រើសរើសច្រើនកាត → Bulk Print → Print ព្រមគ្នា (4 កាត/ទំព័រ)
+```
+1. បិទបញ្ជីបុគ្គលិក (usercapital.closelist) ─ ប្រមូលប្រតិបត្តិការបុគ្គលិកនិមួយៗ
+2. បិទបញ្ជីដៃគូ                              ─ partnerlist.storecloselist
+3. បិទបញ្ជីលុយថៃ                              ─ thaicashdraw.closelist
+4. បញ្ជីលុយកាក់ (closelist.index)             ─ កត់ត្រា cash count + difference
+5. របាយការណ៏សង្ខេប (closelist.summaryreport)  ─ បោះពុម្ព / ផ្ញើ Telegram
 ```
 
 ---
@@ -497,138 +654,239 @@ Student Cards → ជ្រើសរើសច្រើនកាត → Bulk Prin
 
 ---
 
-## ៦.១ ការប្ដូរឈ្មោះសាលា និងឡូហ្គូ (Brand Configuration)
+## ៦.១ User & Permission Management
 
-មានពីររបៀប:
+ប្រព័ន្ធសិទ្ធិមាន **៣ កម្រិត**:
 
-### របៀបទី ១ — Branch Settings (សម្រាប់គ្រប់សាខា)
+1. **Role** (`roles` table): `Admin`, `User` (រួចមាន role ផ្សេងៗដែលអ្នកបង្កើតតាមតម្រូវការ)
+   - `config('helper.user_type')` បង្ហាញ `['admin', 'user']`
+2. **Permission** (`permissions` table): កូដ permission ដូចជា `exchange.delete`, `usercapital.update`, etc.
+   - Method: `User::checkpermission($uid, $code)` — return `1` បើមាន, `0` បើគ្មាន
+   - Day-lock: `User::maxdateopenmoney($uid, $code, $date)` — ប្រើ `pcdt` ជាចំនួនថ្ងៃ
+3. **Pivot data** (`permission_users.pcdt`): ប្រើ store custom value (ឧ. ចំនួនថ្ងៃ user អាច "back-date" record)
 
-```
-Branches → [សាខា] → Settings
-```
-
-បំពេញ:
-- School Name (Khmer / English)
-- Logo path
-- Stamp path
-- Signature path
-- Address, Phone, Email, Website
-
-### របៀបទី ២ — Environment File (Global)
-
-```env
-# .env
-APP_NAME="SITS Information Technology School"
-APP_NAME_KH="សាលាបច្ចេកវិទ្យាព័ត៌មាន អេស អាយ ធី អេស"
-APP_NAME_EN="SITS INFORMATION TECHNOLOGY SCHOOL"
-```
-
-## ៦.២ ការប្ដូរពុម្ពកាត (Customizing Card Template)
+### បន្ថែម user ថ្មី
 
 ```
-Print Templates → Create / Edit
-  ├─ Name: Default Student Card
-  ├─ Type: student_card
-  ├─ HTML Template: កែ HTML structure
-  ├─ CSS Template: កែ styling
-  └─ Is Default: បើក → ពុម្ពនេះនឹងត្រូវប្រើដោយស្វ័យប្រវត្តិ
+ការចុះឈ្មោះ → ចុះឈ្មោះអ្នកប្រើប្រាស់ (/register, name='userregister')
+             → វាយ name, username, password, role, company
+             → POST /storeuser
 ```
 
-> **ចំណាំ**: HTML template ប្រើ `{{ $variable }}` syntax ដូច Blade template។
-
-## ៦.៣ ការបង្កើត Role ថ្មី
+### Apply permission to user
 
 ```
-Roles → Create
-  ├─ Name: accountant
-  ├─ Display Name: Accountant
-  └─ Permissions: ជ្រើសសិទ្ធដែលត្រូវការ
-      (ឧ. invoices.view, invoices.create, payments.view, payments.create)
+/applyright (name='applyright') → ជ្រើស user + permissions → POST /saveapplyright
+ឬ
+/getuserright (name='getuser_right') → JSON list
+POST /saveuserpermission, /updateuserpermission, /deleteuserpermission
 ```
 
-## ៦.៤ ការបង្កើត Permission ថ្មី
+## ៦.២ Multi-Company / Branch Switching
+
+`config('helper.multi_bussiness') = 10` (max companies)។ ការ switch:
 
 ```
-Permissions → Create
-  ├─ Name: reports.export
-  ├─ Module: reports
-  ├─ Display Name: Export Reports
-  └─ Description: អនុញ្ញាតឲ្យនាំចេញរបាយការណ៍
+Login → ជ្រើស Company → session('log_into_company_id') ត្រូវ set
+Sidebar logo + brand name ​updates ដោយផ្អែកលើ session នេះ
+Sidebar / Reports / Lists ត្រងតាម company_id ដោយ scope
 ```
+
+## ៦.៣ ការកំណត់សាខា / Brand
+
+```
+ការចុះឈ្មោះ → ចុះឈ្មោះក្រុមហ៊ុន (/company/register)
+            → name, name1, subname, subtext
+            → logo (upload to public/logo/), logobg, fontsize, textcolor
+            → public_ip (CIDR list — ប្រើដោយ `LoginController::showlogin`)
+            → tel, email, website, address
+```
+
+`public_ip` allowlist: បើ client IP ត្រូវនឹង regex `like %{ip}%`, login page បង្ហាញ user filtered តាម company អត្ថ​​​នោះ (ផ្តោតលើ usability ប៉ុណ្ណោះ — មិនមែនការគ្រប់គ្រងសុវត្ថិភាពទេ)។
+
+## ៦.៤ Currency / Rate Setup
+
+```
+កំណត់រូបិយប័ណ្ណ (/currency)
+  ├─ បន្ថែម currency (Code, name, exchange rate buy/sell)
+  ├─ កំណត់ display order
+  └─ កំណត់ "currency buttons" (សម្រាប់ quick-pick នៅ exchange page)
+
+កំណត់អត្រាប្តូរប្រាក់ថ្មី (/currency/exchangeratenew)
+  └─ Bulk-set buy/sell rate សម្រាប់ currencies ជាច្រើនក្នុងពេលតែមួយ
+```
+
+## ៦.៥ Telegram & Facebook Setup
+
+| Service | `.env` keys | Notes |
+|---|---|---|
+| Telegram primary | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | Main notification bot |
+| Telegram bot #2 | `TELEGRAM_BOT_TOKEN1`, `TELEGRAM_CHAT_ID1` | (ផ្ញើទៅ chat ផ្សេង) |
+| Telegram bot #3 | `TELEGRAM_BOT_TOKEN2`, `TELEGRAM_CHAT_ID2` | (ផ្ញើទៅ chat ផ្សេង) |
+| Kuongkea bot | `KUONGKEA_BOT_TOKEN`, `KUONGKEA_CHAT_ID` | សម្រាប់ owner only |
+| Facebook | `FB_VERIFY_TOKEN`, `FB_PAGE_ID` | Webhook នៅ `/facebook/webhook` |
+
+> **ចំណាំសុវត្ថិភាព**: `TelegramService::sendMessage()` ប្រើ `Http::withOptions(['verify' => false])` — disable SSL verification។ ត្រូវកែជា `true` លើ production ឲ្យមាន CA bundle ត្រឹមត្រូវ។
+
+## ៦.៦ Feature Flags ក្នុង `config/helper.php`
+
+| Key | Default | គោលដៅ |
+|---|---|---|
+| `system_title` | "ឡៅ ពួយឃាង ០៥" | Brand title ដែលបង្ហាញនៅ login + sidebar |
+| `system_subtitle` | "ប្តូរប្រាក់" | Subtitle |
+| `realestate` | 1 | បើ/បិទ module អចលនទ្រព្យ |
+| `transfer_option` | "kuongkea" | Branding នៃ transfer slip |
+| `show_user_capital_master` | 1 | បង្ហាញ master capital នៅ index |
+| `col_vnd` | 0 | column VND (Vietnamese dong) លើ rate display |
+| `autocontinueusercash` | 1 | auto carry-over capital ទៅថ្ងៃបន្ទាប់ |
+| `thai_bangkut_usd` | 1 | Bangkut format ផ្នែកថៃ ជា USD |
+| `khmer_bangkut_usd` | 0 | Bangkut format ផ្នែកខ្មែរ ជា USD |
+| `auto_closelist_rate` | 0 | auto-pull rate នៅពេលបិទបញ្ជី |
+| `multi_bussiness` | 10 | maximum companies |
+| `exchange_auto_capture` | 0 | បើ=1, exchange page បើក face-recognit popup |
+| `set_rate_pandp_mode` | "1" | 0=default, 1=reverse |
+| `haveexchangegold` | "1" | បើក/បិទ Gold exchange feature |
+| `isphnompenhrate` | "0" | សម្គាល់សាខាភ្នំពេញ (សម្រាប់ rate behavior) |
 
 ---
 
-> **ជំពូកទី ៧ — ការថែទាំ និងការដោះស្រាយបញ្ហា**
+> **ជំពូកទី ៧ — ការថែទាំ និងការដោះស្រាយបញ្ហា (Maintenance)**
 
 ---
 
-## ៧.១ Command សំខាន់ៗ (Artisan Commands)
+## ៧.១ Command សំខាន់ៗ (Artisan)
 
 ```bash
-# Clear caches (ប្រសិនបើមានបញ្ហា)
+# Clear caches
 php artisan cache:clear
 php artisan config:clear
 php artisan view:clear
 php artisan route:clear
 
-# Optimize (បន្ទាប់ពី deploy)
+# Optimize (production)
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
 # Database
-php artisan migrate                    # Run migrations
-php artisan migrate:fresh --seed       # Reset DB + seed
-php artisan db:seed --class=UsersSeeder # Seed specific seeder
+php artisan migrate                   # រត់ migrations ដែលនៅសល់
+php artisan migrate:status            # ពិនិត្យ migrations
+mysql -u root -p kuongkea < dump.sql  # Restore schema/data
 
-# Storage link (សម្រាប់ file uploads)
-php artisan storage:link
+# Storage
+php artisan storage:link              # សម្រាប់ photos, captures, logos
+
+# Reverb (realtime)
+php artisan reverb:start
+
+# Tinker (debug)
+php artisan tinker
 ```
 
 ## ៧.២ បញ្ហាដែលជួបប្រទះញឹកញាប់
 
 | បញ្ហា | មូលហេតុ | ដំណោះស្រាយ |
 |---|---|---|
-| **រូបថតមិនបង្ហាញ** | `storage:link` មិនបានធ្វើ | `php artisan storage:link` |
-| **ឡូហ្គូមិនបង្ហាញលើកាត** | គ្មាន `public/images/logo.png` | ដាក់រូបភាព logo ទៅ `public/images/logo.png` |
-| **សិស្សមិនបង្ហាញ** | Branch filter មិនត្រឹមត្រូវ | ពិនិត្យ Branch Switcher នៅខាងលើ |
-| **Permission denied** | Role មិនមានសិទ្ធិ | ពិនិត្យ Role និង Permission |
-| **DataTable error** | Database គ្មានទិន្នន័យ | `php artisan db:seed` |
-| **ទំព័រចុះពណ៌** | npm build មិនបានធ្វើ | `npm run build` |
+| **រូបថត / logo មិនបង្ហាញ** | មិនបាន `storage:link` | `php artisan storage:link` |
+| **Brand title ខុស** | `config/helper.php` cache-ed | `php artisan config:clear` |
+| **AJAX delete/save ត្រឡប់ 419** | CSRF token អស់សុពលភាព | Refresh page ឬ login ឡើងវិញ |
+| **Login throttle បាន lock** | លើស 10 attempts/minute | រង់ចាំ 60 វិនាទី ឬប្ដូរ IP |
+| **Webhook មិនទទួល** | `FB_VERIFY_TOKEN` ខុស | ផ្ទៀងផ្ទាត់ `.env` និង Facebook app config |
+| **Telegram មិនផ្ញើ** | SSL/firewall ទប់ស្កាត់ | Check Cert (Service ប្រើ `verify=false` ជា workaround) |
+| **Database connection refused** | MySQL service stopped | `sudo service mysql start` |
+| **`php artisan route:cache` បរាជ័យ** | Closure នៅ web.php | Closure ភាគច្រើនត្រូវលុបដើម្បីឲ្យ cache ដំណើរការ |
+| **Realtime user-list ស្ងាត់** | Reverb មិនដំណើរការ | `php artisan reverb:start` |
 
-## ៧.៣ Backup ទិន្នន័យ (Data Backup)
+## ៧.៣ Backup ទិន្នន័យ
 
-### SQLite
+### MySQL (Production)
+
 ```bash
-# Copy database file
-copy database\database.sqlite database\database_backup_YYYYMMDD.sqlite
+# Daily dump
+mysqldump -u root -p --single-transaction --quick \
+  --routines --triggers kuongkea \
+  | gzip > /backup/kuongkea_$(date +%F).sql.gz
+
+# Restore
+gunzip < /backup/kuongkea_2026-05-27.sql.gz | mysql -u root -p kuongkea
 ```
 
-### MySQL
+### Files (storage)
+
 ```bash
-mysqldump -u root -p student_profile_db > backup_YYYYMMDD.sql
+# Sync ទៅ remote storage
+rsync -avz storage/app/public/ user@backup-host:/backup/kuongkea-files/
+```
+
+## ៧.៤ ការអាប់ដេតកូដ (Code Update Workflow)
+
+```bash
+git pull origin main
+composer install --no-dev --optimize-autoloader
+npm install && npm run build
+php artisan migrate --force
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
 ```
 
 ---
 
-> **ជំពូកទី ៨ — សង្ខេប URL Routes**
+> **ជំពូកទី ៨ — សង្ខេប URL Routes សំខាន់ៗ**
 
 ---
 
-## តារាង URL សំខាន់ៗ
+| ផ្នែក | URL | Method | Route name |
+|---|---|---|---|
+| Login | `/login` | GET / **POST** | `showlogin` / `checklogin` |
+| Logout | `/logout` | POST | `logout` |
+| Dashboard | `/dashboard` | GET | `dashboard` |
+| User register | `/register` | GET | `userregister` |
+| **Exchange** | | | |
+| Exchange page | `/exchange` | GET | `exchange.index` |
+| Save exchange | `/saveexchange` | POST | `saveexchange` |
+| Exchange list | `/exchangelists` | GET | `exchangelists` |
+| Rate setup | `/currency/exchangeratenew` | GET | `currency.exchangeratenew` |
+| Set rate | `/currency/setrate` | POST | `currency.setrate` |
+| TV rate | `/tv` | GET | `currency.ratedisplaytv` |
+| **Money Transfer** | | | |
+| Partner transfer | `/moneytransfer/formtransfer` | GET | `moneytransfer.formtransfer` |
+| Bank transfer | `/moneytransfer/banktransfer` | GET | `moneytransfer.banktransfer` |
+| Wing transfer | `/moneytransfer/wingtransfer` | GET | `moneytransfer.wingtransfer` |
+| Store transfer | `/moneytransfer/store` | POST | `moneytransfer.store` |
+| Cash-draw | `/moneytransfer/cashdraw` | GET | `moneytransfer.cashdraw` |
+| Delete transfer | `/moneytransfer/delete` | **POST** | `moneytransfer.delete` |
+| **Thai Cash-draw** | | | |
+| Thai SMS | `/thaicashdraw/thaisms` | GET | `thaicashdraw.thaisms` |
+| Thai cash-draw | `/thaicashdraw/cashdraw` | GET | `thaicashdraw.cashdraw` |
+| Thai close-list | `/thaicashdraw/closelist` | GET | `thaicashdraw.closelist` |
+| **Partner List** | | | |
+| New ledger | `/partnerlist/indexnew` | GET | `partnerlist.indexnew` |
+| Old ledger | `/partnerlist` | GET | `partnerlist.index` |
+| All partners | `/partnerlist/alllist` | GET | `partnerlist.alllist` |
+| Netting | `/partnerlist/exchangelist/0` | GET | `partnerlist.exchangelist` |
+| **Real Estate** | | | |
+| Sell | `/realestate` | GET | `realestate.index` |
+| Sold list | `/realestate/soldpropertylist` | GET | `realestate.soldpropertylist` |
+| Contract | `/realestate/docontract` | GET | `realestate.docontract` |
+| Land register | `/land` | GET | `land.index` |
+| **User Capital** | | | |
+| Index | `/usercapital` | GET | `usercapital.index` |
+| Close list | `/usercapital/closelist` | GET | `usercapital.closelist` |
+| Profit | `/usercapital/userprofit` | GET | `usercapital.userprofit` |
+| **Customer** | | | |
+| Index | `/customer` | GET | `customer.index` |
+| Store | `/customer/store` | POST | `customer.store` |
+| Delete | `/customer/delete` | **POST** | `customer.delete` |
+| Capture | `/capture` | POST | `customer.capture` |
+| **Reports** | | | |
+| Close list | `/closelist` | GET | `closelist.index` |
+| Transfer profit | `/report/transferprofit` | GET | `report.transferprofit` |
+| Stock | `/stock` | GET | `stock.index` |
+| Stock report | `/stock/report` | GET | `stock.report` |
+| Buy/Sell report | `/stock/reportbuysale` | GET | `stock.reportbuysale` |
 
-| មុខងារ | URL | ទំព័រ |
-|---|---|---|
-| ផ្ទាំងគ្រប់គ្រង | `/dashboard` | Dashboard |
-| សិស្ស | `/admin/students` | បញ្ជីសិស្ស |
-| បង្កើតសិស្ស | `/admin/students/create` | Form បង្កើត |
-| កាតសិស្សសកល | `/admin/student-cards` | Global card list |
-| Bulk Print | `/admin/student-cards/bulk-print` | Print ច្រើនកាត |
-| វិក្កយបត្រ | `/admin/fees/invoices` | បញ្ជីវិក្កយបត្រ |
-| ទូទាត់ | `/admin/fees/payments` | បញ្ជីការទូទាត់ |
-| របាយការណ៍ | `/admin/reports` | ផ្ទាំងរបាយការណ៍ |
-| អ្នកប្រើ | `/admin/users` | គ្រប់គ្រងអ្នកប្រើ |
-| សាខា | `/admin/branches` | គ្រប់គ្រងសាខា |
+ចំនួនសរុបនៃ named routes នៅ `routes/web.php` = **584** (ភាគច្រើនជា helper / AJAX endpoints)។
 
 ---
 
@@ -636,61 +894,116 @@ mysqldump -u root -p student_profile_db > backup_YYYYMMDD.sql
 
 ---
 
-## ៩.១ របៀបបន្ថែម Module ថ្មី
+## ៩.១ Conventions ដែលគួរយល់
 
-ប្រសិនបើចង់បន្ថែមមុខងារថ្មី:
+- Controllers ភាគច្រើនបង្កប់ `business logic + DB queries + view rendering` ក្នុង method តែមួយ ដែលធ្វើឲ្យ file ធំ (8.6k LOC សម្រាប់ `UserCapitalController`)។ ការ refactor ទៅ Services / Form Requests ត្រូវការមុនពេលបន្ថែម feature ធំៗ។
+- Models ខ្លះៗ​ស្ថិតនៅ `app/*.php` (legacy namespace `App\`) ហើយខ្លះទៀតនៅ `app/Models/*.php` (`App\Models\`)។ ការបន្ថែម model ថ្មីគួរដាក់នៅ `app/Models/` តាមនឹង Laravel default។
+- AJAX ប្រើ jQuery `$.ajax` / `$.post` / `$.get` ដែលជាប់ CSRF ដោយស្វ័យប្រវត្តិតាមរយៈ `$.ajaxSetup` ក្នុង `master.blade.php`។
 
-1. **Create Migration**: បន្ថែម table ទៅ `database/migrations/...`
-2. **Create Model**: `php artisan make:model NewModel`
-3. **Create Controller**: `php artisan make:controller NewModelController`
-4. **Create Routes**: បន្ថែមទៅ `routes/web.php`
-5. **Create Views**: បង្កើត folder ក្នុង `resources/views/admin/...`
-6. **Add Permissions**: បន្ថែមទៅ `RolesPermissionsSeeder`
-7. **Seed Data**: បង្កើត Seeder បើាត្រូវការទិន្នន័យគំរូ
+## ៩.២ របៀបបន្ថែម Module ថ្មី
 
-## ៩.២ គោលការសុវត្ថិភាព (Security)
+1. **បង្កើត Migration**: `php artisan make:migration create_new_module_table`
+2. **បង្កើត Model**: `php artisan make:model NewModule` (ដាក់ក្នុង `app/Models/`)
+   - សូមកំណត់ `$fillable` ដើម្បីរារាំង mass-assignment
+3. **បង្កើត Controller**: `php artisan make:controller NewModuleController`
+4. **បន្ថែម Routes**: ក្នុង `routes/web.php` ក្រុមដែល `middleware:auth` (ឬ `auth,prevent-back-history`)
+   - **WRITE actions ត្រូវប្រើ `Route::post()`** (មិនមែន GET ទេ)
+5. **បង្កើត Views**: បង្កើត folder ក្នុង `resources/views/{module-name}/`
+   - extend `master.blade.php`
+   - ប្រើ `@section('css')`, `@section('content')`, `@section('script')`
+6. **Permissions**: បន្ថែម code(s) ក្នុង `permissions` table ហើយ assign តាម role
+7. **Sidebar / Dashboard**: បន្ថែម link ក្នុង `mainfunction.blade.php` និង `includes/sidebar.blade.php`
 
-- **CSRF Protection**: Laravel Breeze មានរួចជាស្រេច
-- **Authorization**: `can:module.action` middleware គ្រប់ routes
-- **Password Hashing**: bcrypt hashing ដោយស្វ័យប្រវត្តិ
-- **Soft Deletes**: មិនលុបពិតប្រាកដ — recoverable
-- **Audit Trail**: គ្រប់ create/update/delete ត្រូវបានកត់ត្រា
+## ៩.៣ Coding standards ដែលគួរធ្វើ (post-PR #7)
+
+- កុំប្រើ `Route::get` សម្រាប់សកម្មភាពដែលធ្វើ DB write/delete — **ប្រើ POST + CSRF**
+- កុំ hard-code password ក្នុង controllers
+- ប្រើ `Hash::check()` តែប៉ុណ្ណោះសម្រាប់ password verification
+- កុំ trust `HTTP_X_FORWARDED_FOR` direct ដោយគ្មាន TRUSTED_PROXIES allowlist
+- ប្រើ `Validator` ឬ Form Request សម្រាប់ input validation
+- ប្រើ DB transaction (`DB::transaction(fn () => …)`) សម្រាប់ money-related writes ច្រើន step
+
+## ៩.៤ Testing
+
+- បច្ចុប្បន្ន: GitHub Actions CI ធ្វើតែ:
+  - `composer validate`
+  - `php -l` លើ `app/, config/, database/, routes/, tests/`
+  - `php artisan view:cache`, `route:cache`, `config:cache`
+  - `php artisan test --testsuite=Unit` (មាន `ExampleTest.php` ប៉ុណ្ណោះ — minimal coverage)
+- ការ test ដែលគួរបន្ថែម:
+  - Login flow + throttle
+  - CSRF protection នៅ destructive POST routes
+  - Permission check នៅ controllers (មិនមែនតែ Blade ទេ)
+
+## ៩.៥ Branch / PR Workflow
+
+```bash
+# Create feature branch
+git checkout main && git pull origin main
+git checkout -b devin/$(date +%s)-feature-name
+
+# Commit, push, PR
+git add -A && git commit -m "feat: ..."
+git push -u origin HEAD
+gh pr create --fill --base main
+```
+
+CI ត្រូវ pass មុនពេល merge ទៅ main។
 
 ---
 
-> **ជំពូកទី ១០ — ព័ត៌មានទំនាក់ទំនង**
+> **ជំពូកទី ១០ — ឯកសារយោង (References)**
 
 ---
 
-## ឯកសារយោង (References)
+## ឯកសារ Laravel & libraries
 
-- **Laravel Docs**: https://laravel.com/docs/12.x
-- **TailwindCSS**: https://tailwindcss.com/docs
-- **AlpineJS**: https://alpinejs.dev
-- **Yajra DataTables**: https://yajrabox.com/docs/laravel-datatables
+- **Laravel 13 Docs**: https://laravel.com/docs/13.x
+- **Laravel Reverb**: https://laravel.com/docs/13.x/reverb
+- **Sanctum**: https://laravel.com/docs/13.x/sanctum
+- **Spatie Browsershot**: https://github.com/spatie/browsershot
+- **Bootstrap 5**: https://getbootstrap.com/docs/5.2/
+- **Vite**: https://vitejs.dev/
+- **face-api.js**: https://github.com/justadudewhohacks/face-api.js
 
-## អ្នកអភិវឌ្ឍ (Developer Notes)
+## File ដែលគួរអាន
 
-ប្រព័ន្ធនេះត្រូវបានបង្កើតឡើងសម្រាប់គ្រប់គ្រងព័ត៌មានសិស្សពេញលេញ ដោយប្រើ Laravel Framework ជំនាន់ចុងក្រោយ។ ប្រសិនបើមានសំណួរ ឬបញ្ហាណាមួយ សូមពិនិត្យ Log files ក្នុង `storage/logs/` ឬមើល Audit Logs នៅក្នុងប្រព័ន្ធ។
+- `config/helper.php` — feature flags
+- `bootstrap/app.php` — middleware + trusted proxies
+- `routes/web.php` — route ទាំងអស់
+- `app/Http/Controllers/CustomAuth/LoginController.php` — login + permissions
+- `app/User.php` — RBAC API (`checkpermission`, `hasRole`, `permissiongetamt`, `maxdateopenmoney`)
+- `resources/views/master.blade.php` — layout + CSRF setup
+- `resources/views/mainfunction.blade.php` — dashboard cards
+- `resources/views/includes/sidebar.blade.php` — sidebar menu
+
+## អ្នកអភិវឌ្ឍ (Developer Contact)
+
+ប្រព័ន្ធនេះត្រូវបានដាក់ឲ្យដំណើរការសម្រាប់ **ហាងប្ដូរប្រាក់ ឡៅ ពួយឃាង ០៥** ដោយប្រើ
+Laravel framework។ បើមានបញ្ហាសូមពិនិត្យ:
+
+- `storage/logs/laravel.log` — Laravel runtime errors
+- `storage/logs/` — log files ផ្សេងៗ
+- GitHub Issues: https://github.com/samnangitsr/kuongkea/issues
+- GitHub PRs: https://github.com/samnangitsr/kuongkea/pulls
 
 ---
 
 **សង្ខេបការប្រើប្រាស់រហ័ស (Quick Start Checklist)**
 
-- [ ] Clone Project
+- [ ] `git clone https://github.com/samnangitsr/kuongkea.git`
 - [ ] `composer install`
 - [ ] `npm install && npm run build`
-- [ ] Copy `.env.example` → `.env`
+- [ ] `cp .env.example .env`
+- [ ] កំណត់ `.env`: DB, `TRUSTED_PROXIES=` (empty for direct internet), `TELEGRAM_*`, `FB_*`
 - [ ] `php artisan key:generate`
-- [ ] Create database file
-- [ ] `php artisan migrate`
-- [ ] `php artisan db:seed`
+- [ ] បង្កើត MySQL database
+- [ ] `php artisan migrate` ឬ import SQL dump
 - [ ] `php artisan storage:link`
-- [ ] Login with `admin@sits.edu.kh` / `password`
-- [ ] Switch to correct branch
-- [ ] Upload logo to `public/images/logo.png`
+- [ ] បង្កើត admin user តាមដៃ (insert into `users` ជាមួយ bcrypt password)
+- [ ] `php artisan serve` (+ `php artisan reverb:start` បើត្រូវការ realtime)
+- [ ] Login → ជ្រើស Company → ចូល Dashboard
+- [ ] ដាក់ logo ទៅ `public/logo/` និងផ្លាស់ប្តូរ Brand title តាម `/company/register`
 - [ ] Ready to use!
 
 ---
-
-*ឯកសារនេះត្រូវបានបង្កើតឡើងដោយស្វ័យប្រវត្តិពី Project Audit — ថ្ងៃទី ៥ ឧសភា ២០២៦*
