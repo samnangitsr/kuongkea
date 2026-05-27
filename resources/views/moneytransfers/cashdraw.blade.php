@@ -1348,7 +1348,7 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             async: true,
-                            type: 'GET',
+                            type: 'POST',
                             dataType:'JSON',
                             contentType: 'application/json;charset=utf-8',
                             url: "{{ route('cashdraw.delete') }}",
@@ -1401,7 +1401,7 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             async: true,
-                            type: 'GET',
+                            type: 'POST',
                             dataType:'JSON',
                             contentType: 'application/json;charset=utf-8',
                             url: "{{ route('cashdraw.deletebankcontinue') }}",
@@ -1496,7 +1496,7 @@
             var url="{{ route('cashdraw.clearclick') }}";
             var output='';
             var k=0;
-            $.get(url,{d1:d1,d2:d2},function(data){
+            $.post(url,{d1:d1,d2:d2},function(data){
                 console.log(data);
                 for(var i=0;i<data['useractions'].length;i++){
                     k+=1;
@@ -1521,7 +1521,7 @@
             var row = $(this).closest('tr');
             var rowind=row.find("td:eq(0)").text();
             var url="{{ route('deleteuseraction') }}";
-            $.get(url,{id:id},function(data){
+            $.post(url,{id:id},function(data){
                 document.getElementById("tableclearclick").deleteRow(rowind);
                 ResetNo1();
             })
@@ -1535,7 +1535,7 @@
             var url="{{ route('getpartnerbytype') }}";
             $(el).empty();
 
-            $.get(url,{type:type},function(data){
+            $.post(url,{type:type},function(data){
                 $(el).append($("<option/>",{
                             value:'',
                             text:''
@@ -2094,7 +2094,7 @@
             var url="{{ route('deleteuseractionbytransferid') }}";
             var id=$('#receive_id').val();
 
-            $.get(url,{id:id},function(data){
+            $.post(url,{id:id},function(data){
                 console.log(data);
             })
         });
@@ -2163,7 +2163,7 @@
             $('#photopath').val('');
             $('#clickcapture2').val('');
           var url="{{ route('moneytransfer.getmulticashdraw') }}";
-            $.get(url,{},function(data){
+            $.post(url,{},function(data){
               $('#diva').empty().html(data);
              callback();
 
@@ -2172,14 +2172,14 @@
         $(document).on('click','.btndeltransfertemp',function(e){
           var id=$(this).data('transferid');
           var url="{{ route('moneytransfer.unselectcashdraw') }}";
-            $.get(url,{id:id},function(data){
+            $.post(url,{id:id},function(data){
               //console.log(data)
               opencashdrawmulti(sumcashdraw);
             })
         })
         $(document).on('click','#btncleartransferlist',function(e){
           var url="{{ route('moneytransfer.clearcashdrawselect') }}";
-            $.get(url,{},function(data){
+            $.post(url,{},function(data){
               //console.log(data)
               opencashdrawmulti(sumcashdraw);
             })
@@ -2477,7 +2477,7 @@
         function unselect(id,el)
         {
           var url="{{ route('moneytransfer.unselectcashdraw') }}";
-            $.get(url,{id:id},function(data){
+            $.post(url,{id:id},function(data){
               if(data.del2==1){
                 el.text('select');
               }
@@ -2498,7 +2498,7 @@
             var amtset=$('#txtsearchbyamt1').attr('title');
 
             var url="{{ route('moneytransfer.opencashdraw') }}";
-            $.get(url,{id:id,amtset:amtset,isselect:isselect},function(data){
+            $.post(url,{id:id,amtset:amtset,isselect:isselect},function(data){
                //console.log(data)
                 if(data.error==true){//if return view
                     alert('You can not open this money.\n' + data.errorsms);
@@ -2946,7 +2946,7 @@
         function getcurrencybykey2(key,el,lblbuy,txtbuy,txtrate,lblsale,txtsale,txtsign,lblrate)
     {
         // var url="{{ route('getcurrencybykey') }}";
-        // $.get(url,{key:key},function(data){
+        // $.post(url,{key:key},function(data){
         //         if(data['c']!=null){
         //             $(el).val(data['c']['shortcut']);
         //             $(el).attr('title', data['c']['id'] + ';' + data['c']['ratebuy'] + ';' + data['c']['ratesale'] + ';' + data['c']['optsign'] + ';' + data['c']['ismain'] + ';' + data['c']['isfn'] + ';' + data['c']['shortcut']);
@@ -2971,7 +2971,7 @@
     //  function getcurrencybykey(key,el)
     // {
     //     // var url="{{ route('getcurrencybykey') }}";
-    //     // $.get(url,{key:key},function(data){
+    //     // $.post(url,{key:key},function(data){
     //     //         if(data['c']!=null){
     //     //             $(el).val(data['c']['shortcut']);
     //     //             $(el).attr('title', data['c']['id'] + ';' + data['c']['ratebuy'] + ';' + data['c']['ratesale'] + ';' + data['c']['optsign'] + ';' + data['c']['ismain'] + ';' + data['c']['isfn'] + ';' + data['c']['shortcut']);
@@ -3056,7 +3056,7 @@
                 curname = salecur + '-' + buycur;
             }
             //alert(curname)
-            $.get(url,{curname:curname},function(data){
+            $.post(url,{curname:curname},function(data){
                 if(data.success){
                     if($('#countrycode').val()=='+66'){
                       $(txtrate).val(formatNumber(parseFloat(data['pr']['thai_rate'])));

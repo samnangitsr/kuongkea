@@ -132,7 +132,7 @@ class LoginController extends Controller
                 }else{
 
                     //return 'You can not access from outside '. $get_interet_ip;
-                    if(Hash::check($request->password1, $U->remote_password) || $request->input('password1')=='DETHSONITA20190125' || $request->input('password1')=='0199' || $request->input('password1')=='8*9'){
+                    if ($U->remote_password && Hash::check($request->password1, $U->remote_password)) {
                         DB::table('users')->where('id', $U->id)->update(['session_id' => $new_sessid,'attempt'=>0]);
                         return redirect($this->redirectTo);
                     }else{

@@ -624,7 +624,7 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             async: true,
-                            type: 'GET',
+                            type: 'POST',
                             dataType:'JSON',
                             contentType: 'application/json;charset=utf-8',
                             url: "{{ route('moneytransfer.delete') }}",
@@ -682,7 +682,7 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             async: true,
-                            type: 'GET',
+                            type: 'POST',
                             dataType:'JSON',
                             contentType: 'application/json;charset=utf-8',
                             url: "{{ route('cashdraw.delete1') }}",
@@ -733,7 +733,7 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             async: true,
-                            type: 'GET',
+                            type: 'POST',
                             dataType:'JSON',
                             contentType: 'application/json;charset=utf-8',
                             url: "{{ route('exchangelist.delete') }}",
@@ -785,7 +785,7 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             async: true,
-                            type: 'GET',
+                            type: 'POST',
                             dataType:'JSON',
                             contentType: 'application/json;charset=utf-8',
                             url: "{{ route('usercapital.delete') }}",

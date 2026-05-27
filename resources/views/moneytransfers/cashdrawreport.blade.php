@@ -408,7 +408,7 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             async: true,
-                            type: 'GET',
+                            type: 'POST',
                             dataType:'JSON',
                             contentType: 'application/json;charset=utf-8',
                             url: "{{ route('cashdraw.delete') }}",
@@ -564,7 +564,7 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             async: true,
-                            type: 'GET',
+                            type: 'POST',
                             dataType:'JSON',
                             contentType: 'application/json;charset=utf-8',
                             url: "{{ route('moneytransfer.delete') }}",
